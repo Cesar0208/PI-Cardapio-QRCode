@@ -5,7 +5,7 @@ const connection = mysql.createConnection({
     user: "root",
     password: "senac",
     // Arrumar
-    database: "Nome do banco aqui",
+    database: "pi_cardapio",
     port: 3307
 });
 

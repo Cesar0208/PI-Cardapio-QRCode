@@ -22,7 +22,8 @@ app.post("/login", async (req, res) => {
     }
 
     try {
-        const [users] = await db.query("SELECT * FROM usuarios WHERE email = ?", [email]);
+        // CORREÇÃO: usar db.execute + await
+        const [users] = await db.execute("SELECT * FROM Clientes WHERE email = ?", [email]);
 
         if (users.length === 0) {
             return res.status(401).json({ mensagem: "Credenciais inválidas." });
@@ -30,23 +31,24 @@ app.post("/login", async (req, res) => {
 
         const user = users[0];
 
-        const isMatch = (senha === user.senha_banco);
+        const isMatch = senha === user.Senha; // compare sua senha
 
         if (!isMatch) {
-            return res.status(401).json({ mensagem: "Credenciais inválidas." });
+            return res.status(401).json({ mensagem: "Credenciais inválidas."});
         }
-        delete user.senha_banco; 
-        
+
+        delete user.Senha;  // remove a senha do retorno
+
         return res.status(200).json({
             mensagem: "Login realizado com sucesso!",
-            usuario: user // Retorna os dados do usuário logado
+            usuario: user
         });
 
     } catch (error) {
         console.error("Erro no processo de login:", error);
         return res.status(500).json({ mensagem: "Erro interno do servidor ao tentar fazer login." });
     }
-});    
+});   
 
 app.post("/cadastro", (req, res) => {
     const {nome, email, cpf, telefone, senha, confirmaSenha} = req.body;

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cardápio Premium - Hamburgueria</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #f700009a;
+            --secondary-color: #ff00009a;
+            --accent-color: #000000;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --glass-header: rgba(7, 0, 0, 0);
+            --card-bg: #ffffff;
+        }
+
+        /* --- Tela de Carregamento (Loader) --- */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-gradient); /* Mantém a identidade visual */
+            z-index: 9999; /* Garante que fique acima de tudo */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loader-icon {
+            font-size: 5rem;
+            color: lch(80.68% 77.76 83.25); /* Cor de pão/queijo */
+            margin-bottom: 20px;
+            /* Animação composta: gira e pulsa */
+            animation: burger-bounce 1.5s infinite ease-in-out;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+        }
+
+        .loader-text {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            animation: pulse-text 1.5s infinite ease-in-out;
+        }
+
+        /* Animação do Hambúrguer */
+        @keyframes burger-bounce {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        /* Animação do Texto */
+        @keyframes pulse-text {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Classe para esconder o loader via JS */
+        .loader-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f1f5f9;
+            color: #334155;
+            padding-top: 80px; /* Espaço para o header fixo */
+        }
+
+        /* --- Header Glassmorphism --- */
+        /* --- Header & Navbar --- */
+        .site-header {
+            padding: 10px 0;
+            background: rgba(255, 255, 255, 0.9); /* Fundo mais sólido para leitura */
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            color: var(--secondary-color);
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .logo:hover {
+            color: var(--primary-color);
+        }
+
+        /* Estilo dos Links */
+        .nav-link-custom {
+            color: #64748b;
+            font-weight: 600;
+            margin: 0 15px; /* Espaçamento horizontal */
+            text-decoration: none;
+            font-size: 0.95rem;
+            position: relative;
+            padding: 10px 0; /* Área de clique maior no mobile */
+            display: block;
+        }
+
+        .nav-link-custom:hover, .nav-link-custom.active {
+            color: var(--primary-color);
+        }
+
+        /* Efeito de sublinhado animado (apenas Desktop) */
+        @media (min-width: 992px) {
+            .nav-link-custom::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: 5px;
+                left: 0;
+                background-color: var(--primary-color);
+                transition: width 0.3s;
+            }
+
+            .nav-link-custom:hover::after {
+                width: 100%;
+            }
+        }
+
+        /* Botão do Hambúrguer */
+        .navbar-toggler:focus {
+            box-shadow: none; /* Remove a borda azul padrão do Bootstrap */
+            outline: none;
+        }
+
+        /* Ajustes do Carrinho */
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border: 2px solid white; /* Borda branca para destacar */
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 60px 20px;
+            border-radius: 0 0 30px 30px;
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: -20px; /* Colar no header visualmente */
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
+        }
+
+        .hero h2 { font-weight: 700; margin-bottom: 15px; }
+        .hero p { opacity: 0.9; max-width: 600px; margin: 0 auto; font-size: 1.1rem; }
+
+        /* --- Filtros de Categoria --- */
+        .category-filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 10px 25px;
+            border-radius: 50px;
+            color: #64748b;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .filter-btn.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(109, 40, 217, 0.3);
+        }
+
+        /* --- Cards do Menu --- */
+        .menu-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        }
+
+        .thumb {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            background-color: #e2e8f0; /* Fallback se imagem falhar */
+        }
+
+        .card-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .item-desc {
+            color: #64748b;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            flex: 1; /* Empurra o footer para baixo */
+            margin-bottom: 15px;
+        }
+
+        .card-footer-custom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .btn-add {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-add:hover {
+            background: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        /* --- Footer --- */
+        .site-footer {
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+        
+        /* --- Toast Notification --- */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
+    </style>
+</head>
+<body>
+    <div id="loader-overlay">
+        <i class="fas fa-hamburger loader-icon"></i>
+        <p class="loader-text">Preparando a chapa...</p>
+    </div>
+
+    <nav class="navbar navbar-expand-lg site-header fixed-top">
+        <div class="container">
+            <a class="navbar-brand logo" href="#">
+                <i class="fas fa-hamburger me-2"></i>BurguerPI
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="fas fa-bars text-primary fs-3"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center text-center">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link-custom active" onclick="closeMenu()">Cardápio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link-custom" onclick="closeMenu()">Sobre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="login.html" class="nav-link-custom" onclick="closeMenu()">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div class="container">
+            <h2>Experiência Artesanal</h2>
+            <p>Ingredientes selecionados, sabores inesquecíveis e a melhor experiência gastronômica da cidade entregue na sua mesa.</p>
+        </div>
+    </div>
+
+    <main class="container">
+        
+        <div class="category-filters">
+            <button class="filter-btn active" onclick="filterMenu('todos', this)">Todos</button>
+            <button class="filter-btn" onclick="filterMenu('burger', this)">Burgers</button>
+            <button class="filter-btn" onclick="filterMenu('acompanhamento', this)">Acompanhamentos</button>
+            <button class="filter-btn" onclick="filterMenu('bebida', this)">Bebidas</button>
+            <button class="filter-btn" onclick="filterMenu('sobremesa', this)">Sobremesas</button>
+        </div>
+
+        <div class="row g-4" id="menuContainer">
+            
+            <div class="col-md-6 col-lg-3 menu-item" data-category="burger">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Classic Burger">
+                    <div class="card-body">
+                        <h4 class="item-title">Classic Burger</h4>
+                        <p class="item-desc">Pão brioche selado na manteiga, blend 160g, cheddar inglês, alface americana e tomate orgânico.</p>
+                        <div class="card-footer-custom">
+                            <span class="price">R$ 28,00</span>
+                            <button class="btn-add" onclick="facaLogin()"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 menu-item" data-category="burger">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Bacon Supreme">
+                    <div class="card-body">
+                        <h4 class="item-title">Bacon Supreme</h4>
+                        <p class="item-desc">Blend 180g, tiras de bacon crocante, cebola caramelizada no shoyu e maionese de alho da casa.</p>
+                        <div class="card-footer-custom">
+                            <span class="price">R$ 34,50</span>
+                            <button class="btn-add" onclick="facaLogin()"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 menu-item" data-category="burger">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Double Smash">
+                    <div class="card-body">
+                        <h4 class="item-title">Double Smash</h4>
+                        <p class="item-desc">Dois ultra smashes de 80g, quádruplo queijo prato e molho especial secreto.</p>
+                        <div class="card-footer-custom">
+                            <span class="price">R$ 32,00</span>
+                            <button class="btn-add" onclick="facaLogin()"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 menu-item" data-category="burger">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1520072959219-c595dc3f312a?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Veggie Deluxe">
+                    <div class="card-body">
+                        <h4 class="item-title">Veggie Deluxe</h4>
+                        <p class="item-desc">Hambúrguer de grão-de-bico com beterraba, rúcula, tomate seco e molho pesto vegano.</p>
+                        <div class="card-footer-custom">
+                            <span class="price">R$ 26,00</span>
+                            <button class="btn-add" onclick="facaLogin()"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 menu-item" data-category="acompanhamento">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Batata Rústica">
+                    <div class="card-body">
+                        <h4 class="item-title">Batata Rústica</h4>
+                        <p class="item-desc">Corte caseiro com casca, alecrim, páprica defumada e maionese verde.</p>
+                        <div class="card-footer-custom">
+                            <span class="price">R$ 15,00</span>
+                            <button class="btn-add" onclick="facaLogin()"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 menu-item" data-category="acompanhamento">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1639024471283-03518883512d?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Onion Rings">
+                    <div class="card-body">
+                        <h4 class="item-title">Onion Rings</h4>
+                        <p class="item-desc">Anéis de cebola empanados na farinha panko, super crocantes.</p>
+                        <div class="card-footer-custom">
+                            <span class="price">R$ 18,00</span>
+                            <button class="btn-add" onclick="facaLogin()"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 menu-item" data-category="bebida">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1556710807-a9261921475f?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Milkshake">
+                    <div class="card-body">
+                        <h4 class="item-title">Milkshake Ovomaltine</h4>
+                        <p class="item-desc">Sorvete de baunilha batido com muito ovomaltine e calda de chocolate.</p>
+                        <div class="card-footer-custom">
+                            <span class="price">R$ 18,50</span>
+                            <button class="btn-add" onclick="facaLogin()"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 menu-item" data-category="bebida">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Refrigerante">
+                    <div class="card-body">
+                        <h4 class="item-title">Refrigerante Lata</h4>
+                        <p class="item-desc">Coca-cola, Guaraná, Sprite ou Fanta (350ml).</p>
+                        <div class="card-footer-custom">
+                            <span class="price">R$ 6,00</span>
+                            <button class="btn-add" onclick="facaLogin()"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 menu-item" data-category="sobremesa">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Brownie">
+                    <div class="card-body">
+                        <h4 class="item-title">Brownie da Casa</h4>
+                        <p class="item-desc">Brownie meio amargo servido quente com bola de sorvete de creme.</p>
+                        <div class="card-footer-custom">
+                            <span class="price">R$ 22,00</span>
+                            <button class="btn-add" onclick="facaLogin()"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="site-footer text-center">
+        <div class="container">
+            <h5 class="text-white mb-3">BurguerPI</h5>
+            <div class="mb-4">
+                <a href="#" class="text-secondary mx-2"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="#" class="text-secondary mx-2"><i class="fab fa-facebook fa-lg"></i></a>
+                <a href="#" class="text-secondary mx-2"><i class="fab fa-whatsapp fa-lg"></i></a>
+            </div>
+            <p class="small mb-0">&copy; 2023 Hamburgueria Artesanal. Feito com <i class="fas fa-heart text-danger"></i> para você.</p>
+        </div>
+    </footer>
+
+    <div class="toast-container p-3">
+        <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i> Item adicionado ao carrinho!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // --- Lógica do Carrinho ---
+        let cartCount = 0;
+        const badge = document.getElementById('cartCount');
+        
+        function facaLogin() {
+            alert("Faça login para adicionar ao carrinho!")
+        }
+
+        // --- Lógica de Filtros ---
+        function filterMenu(category, element) {
+            // 1. Atualizar estilo dos botões
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+
+            // 2. Filtrar itens
+            const items = document.querySelectorAll('.menu-item');
+            
+            items.forEach(item => {
+                // Efeito de Fade Out
+                item.style.opacity = '0';
+                item.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    if (category === 'todos' || item.getAttribute('data-category') === category) {
+                        item.style.display = 'block';
+                        // Pequeno delay para permitir o display: block renderizar antes da animação
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'scale(1)';
+                        }, 50);
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }, 300); // Tempo da transição CSS
+            });
+        }
+
+        // Função para fechar o menu mobile ao clicar em um link
+        function closeMenu() {
+            const navbarCollapse = document.getElementById('navbarNav');
+            // Verifica se o menu está aberto (classe 'show' do Bootstrap)
+            if (navbarCollapse.classList.contains('show')) {
+                const bsCollapse = new bootstrap.Collapse(navbarCollapse);
+                bsCollapse.hide();
+            }
+        }
+
+        // --- Lógica do Loader ---
+        window.addEventListener("load", () => {
+            const loader = document.getElementById("loader-overlay");
+            
+            // Pequeno delay para garantir que a animação seja vista (opcional)
+            setTimeout(() => {
+                loader.classList.add("loader-hidden");
+                
+                // Remove o elemento do DOM após a transição para liberar memória
+                loader.addEventListener("transitionend", () => {
+                    loader.remove();
+                });
+            }, 1000); // Espera 1 segundo antes de sumir
+        });
+    </script>
+
+</body>
+</html>

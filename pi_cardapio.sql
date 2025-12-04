@@ -8,7 +8,8 @@ CREATE TABLE Funcionarios (
     CPF VARCHAR(14) UNIQUE NOT NULL, 
     Telefone VARCHAR(20),
     Email VARCHAR(100) UNIQUE,
-    Cargo VARCHAR(50)
+    Cargo VARCHAR(50),
+    Senha VARCHAR(255) NOT NULL 
 );
 
 CREATE TABLE Clientes (

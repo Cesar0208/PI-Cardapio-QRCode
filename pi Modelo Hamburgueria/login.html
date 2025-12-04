@@ -316,7 +316,7 @@
 
                             <div class="form-section" id="cadastroForm">
                                 <h2>Crie sua conta</h2>
-                                <form>
+                                <form id="formCadastro">
                                     <div class="position-relative">
                                         <div class="form-floating mb-3">
                                             <input type="text" class="form-control" id="nomeCadastro" placeholder="Nome" required>
@@ -428,7 +428,38 @@
         window.addEventListener('DOMContentLoaded', () => {
             cadastroForm.style.display = 'none';
         });
-    </script>
 
+        document.getElementById("formCadastro").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const dados = {
+                nome: document.getElementById("nomeCadastro").value,
+                email: document.getElementById("emailCadastro").value,
+                cpf: document.getElementById("CPFCadastro").value,
+                telefone: document.getElementById("telefoneCadastro").value,
+                senha: document.getElementById("senhaCadastro").value,
+                confirmaSenha: document.getElementById("confirmarSenha").value,
+            };
+
+            try {
+                const res = await fetch("http://localhost:3000/cadastro", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(dados)
+                });
+
+                const resposta = await res.json();
+
+                if (res.ok) {
+                    alert("Cadastro realizado com sucesso!");
+                } else {
+                    alert(resposta.mensagem);
+                }
+
+            } catch (error) {
+                alert("Erro ao conectar ao servidor.");
+            }
+        });
+    </script>
 </body>
 </html>

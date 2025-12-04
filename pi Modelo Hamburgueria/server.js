@@ -1,7 +1,9 @@
 const express = require("express");
-const db = require("./config/db")
+const db = require("./config/db");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -34,7 +36,7 @@ app.post("/login", async (req, res) => {
         const isMatch = senha === user.Senha; // compare sua senha
 
         if (!isMatch) {
-            return res.status(401).json({ mensagem: "Credenciais inválidas."});
+            return res.status(401).json({ mensagem: "Senha inválida inválidas."});
         }
 
         delete user.Senha;  // remove a senha do retorno
@@ -63,9 +65,9 @@ app.post("/cadastro", (req, res) => {
 
     db.query("INSERT INTO Clientes(Nome, CPF, Telefone, Email, Senha) VALUES (?, ?, ?, ?, ?)", [nome, cpf, telefone, email, senha], (err, resultado) => {
         if (err) return res.status(500).json({erro: err});
-
-        res.status(200).json({mensagem: "Usuario adicionado!"});
     })
+
+    res.status(200).json({mensagem: "Usuario adicionado!"});
 });
 
 app.listen(3000, () => {

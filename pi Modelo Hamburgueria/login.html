@@ -283,7 +283,7 @@
                             
                             <div class="form-section active" id="loginForm">
                                 <h2>Bem-vindo de volta!</h2>
-                                <form>
+                                <form id="formLogin">
                                     <div class="position-relative">
                                         <div class="form-floating mb-3">
                                             <input type="email" class="form-control" id="emailLogin" placeholder="name@example.com" required>
@@ -429,6 +429,43 @@
             cadastroForm.style.display = 'none';
         });
 
+        // Login
+        document.getElementById("formLogin").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const dados = {
+                email: document.getElementById("emailLogin").value,
+                senha: document.getElementById("senhaLogin").value
+
+            }
+
+            try {
+                const res = await fetch("http://localhost:3000/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(dados)
+                });
+
+                const resposta = await res.json();
+
+                if (res.ok) {
+                    alert("Login realizado com sucesso!");
+
+                    localStorage.setItem("nomeUsuario", resposta.usuario.Nome);
+
+                    window.location.href = "Teste.html";
+
+                } else {
+                    alert(resposta.mensagem);
+                }
+
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                alert("Erro ao conectar ao servidor.");
+            }
+        });
+
+        // Cadastro
         document.getElementById("formCadastro").addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -457,6 +494,7 @@
                 }
 
             } catch (error) {
+                console.error("Erro na requisição:", error);
                 alert("Erro ao conectar ao servidor.");
             }
         });

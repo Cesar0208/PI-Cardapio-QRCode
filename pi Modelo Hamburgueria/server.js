@@ -36,7 +36,7 @@ app.post("/login", async (req, res) => {
         const isMatch = senha === user.Senha; // compare sua senha
 
         if (!isMatch) {
-            return res.status(401).json({ mensagem: "Senha inválida inválidas."});
+            return res.status(401).json({ mensagem: "Senha inválida."});
         }
 
         delete user.Senha;  // remove a senha do retorno
@@ -71,5 +71,5 @@ app.post("/cadastro", (req, res) => {
 });
 
 app.listen(3000, () => {
-console.log("Servidor rodando em http://localhost:3000");
+    console.log("Servidor rodando em http://localhost:3000");
 });

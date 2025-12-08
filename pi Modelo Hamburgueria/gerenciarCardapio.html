@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Cardápio - BurguerPI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #1e293b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--secondary-color);
+        }
+
+        .navbar {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .container-custom {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-add-item {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            padding: 12px 30px;
+            border: none;
+        }
+
+        .btn-add-item:hover {
+            background-color: #4338ca;
+            color: white;
+        }
+
+        .card-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .item-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            background-color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #cbd5e1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            margin: 15px 0 10px 0;
+        }
+
+        .item-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success-color);
+        }
+
+        .item-description {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin: 10px 0;
+            min-height: 40px;
+        }
+
+        .badge-category {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-disponivel {
+            background-color: var(--success-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-indisponivel {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .preview-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--primary-color), #6366f1);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stats-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #e2e8f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #94a3b8;
+        }
+
+        .image-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-hamburger me-2"></i>BurguerPI - Gerenciar Cardápio
+            </a>
+            <div class="d-flex">
+                <button class="btn btn-light btn-sm" onclick="voltarDashboard()">
+                    <i class="fas fa-arrow-left me-1"></i>Voltar ao Dashboard
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-custom">
+        
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2><i class="fas fa-utensils me-2"></i>Gerenciamento do Cardápio</h2>
+                    <p class="text-muted mb-0">Adicione, edite e organize os itens do menu da hamburgueria</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-add-item" data-bs-toggle="modal" data-bs-target="#modalAddItem">
+                        <i class="fas fa-plus me-2"></i>Adicionar Novo Item
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="total-itens">0</div>
+                    <div class="stats-label">Total de Itens</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, var(--success-color), #059669);">
+                    <div class="stats-number" id="itens-disponiveis">0</div>
+                    <div class="stats-label">Disponíveis</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, var(--danger-color), #dc2626);">
+                    <div class="stats-number" id="itens-indisponiveis">0</div>
+                    <div class="stats-label">Indisponíveis</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, var(--warning-color), #f97316);">
+                    <div class="stats-number" id="total-categorias">0</div>
+                    <div class="stats-label">Categorias</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="filter-search" placeholder="Buscar por nome..." onkeyup="filtrarItens()">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="filter-category" onchange="filtrarItens()">
+                        <option value="">Todas as Categorias</option>
+                        <option value="burgers">Burgers</option>
+                        <option value="bebida">Bebida</option>
+                        <option value="acompanhamento">Acompanhamento</option>
+                        <option value="sobremesa">Sobremesa</option>
+                        <option value="Combo">Combo</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="filter-status" onchange="filtrarItens()">
+                        <option value="">Todos os Status</option>
+                        <option value="disponivel">Disponível</option>
+                        <option value="indisponivel">Indisponível</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-outline-danger w-100" onclick="limparFiltros()">
+                        <i class="fas fa-times me-1"></i>Limpar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="menu-container">
+        </div>
+
+        <div id="empty-state" class="text-center py-5" style="display: none;">
+            <i class="fas fa-utensils fa-4x text-muted mb-3"></i>
+            <h4 class="text-muted">Nenhum item encontrado</h4>
+            <p class="text-muted">Adicione o primeiro item ao cardápio ou ajuste os filtros</p>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="modalAddItem" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i><span id="modal-title-text">Adicionar Novo Item</span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-item">
+                        <input type="hidden" id="item-id">
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="item-nome" class="form-label">Nome do Item *</label>
+                                <input type="text" class="form-control" id="item-nome" required placeholder="Ex: X-Bacon Especial">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="item-categoria" class="form-label">Categoria *</label>
+                                <select class="form-select" id="item-categoria" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="burgers">Burgers</option>
+                                    <option value="bebida">Bebida</option>
+                                    <option value="acompanhamento">Acompanhamento</option>
+                                    <option value="sobremesa">Sobremesa</option>
+                                    <option value="Combo">Combo</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="item-preco" class="form-label">Preço (R$) *</label>
+                                <input type="number" class="form-control" id="item-preco" step="0.01" min="0" required placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="item-descricao" class="form-label">Descrição</label>
+                                <textarea class="form-control" id="item-descricao" rows="3" placeholder="Descreva os ingredientes e características do item..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="item-quantidade" class="form-label">Quantidade em Estoque</label>
+                                <input type="number" class="form-control" id="item-quantidade" min="0" value="0" placeholder="0">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="item-imagem" class="form-label">URL da Imagem</label>
+                                <input type="url" class="form-control" id="item-imagem" placeholder="https://exemplo.com/imagem.jpg" onchange="previewImagem()">
+                                <div id="preview-container" style="display: none;">
+                                    <img id="preview-img" class="preview-image" alt="Preview">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="item-disponivel" checked>
+                                    <label class="form-check-label" for="item-disponivel">
+                                        <strong>Item disponível para venda</strong>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="item-destaque">
+                                    <label class="form-check-label" for="item-destaque">
+                                        Destacar este item no cardápio
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="salvarItem()">
+                        <i class="fas fa-save me-1"></i>Salvar Item
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let menuItens = [];
+        let editandoId = null;
+        const API_URL = 'http://localhost:3000';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarItens();
+        });
+
+        async function carregarItens() {
+            try {
+                const response = await fetch(`${API_URL}/produtos`);
+                if (!response.ok) throw new Error('Erro ao carregar produtos');
+                
+                menuItens = await response.json();
+                menuItens = menuItens.map(item => ({
+                    id: item.ID,
+                    nome: item.Nome,
+                    categoria: item.Categoria,
+                    preco: parseFloat(item.Preco_Unitario),
+                    descricao: item.Descricao,
+                    imagem: item.imagem,
+                    disponivel: Boolean(item.disponivel),
+                    destaque: Boolean(item.destaque),
+                    quantidade: item.Quantidade || 0
+                }));
+                
+                renderizarItens();
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                mostrarAlerta('Erro ao carregar produtos do cardápio. Usando dados locais.', 'warning');
+                carregarItensLocal();
+            }
+        }
+
+        function carregarItensLocal() {
+            const itensSalvos = localStorage.getItem('menuItens');
+            if (itensSalvos) {
+                menuItens = JSON.parse(itensSalvos);
+            } else {
+                menuItens = [];
+            }
+            renderizarItens();
+        }
+
+        function salvarNoLocalStorage() {
+            localStorage.setItem('menuItens', JSON.stringify(menuItens));
+        }
+
+        function renderizarItens() {
+            const container = document.getElementById('menu-container');
+            const emptyState = document.getElementById('empty-state');
+            
+            const itensFiltrados = filtrarItensArray();
+            
+            if (itensFiltrados.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+                container.innerHTML = itensFiltrados.map(item => `
+                    <div class="col-md-6 col-lg-4 col-xl-3">
+                        <div class="card-item">
+                            ${item.imagem ? 
+                                `<img src="${item.imagem}" class="item-image" alt="${item.nome}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                 <div class="image-placeholder" style="display: none;">
+                                     <i class="fas fa-image"></i>
+                                     <small>Sem imagem</small>
+                                 </div>` :
+                                `<div class="image-placeholder">
+                                     <i class="fas fa-${getCategoriaIcon(item.categoria)}"></i>
+                                     <small>${item.categoria}</small>
+                                 </div>`
+                            }
+                            <div class="item-name">${item.nome}</div>
+                            <div class="item-price">R$ ${item.preco.toFixed(2)}</div>
+                            <div class="item-description">${item.descricao || 'Sem descrição'}</div>
+                            <div class="d-flex gap-2 flex-wrap mb-2">
+                                <span class="badge-category">${item.categoria}</span>
+                                <span class="${item.disponivel ? 'badge-disponivel' : 'badge-indisponivel'}">
+                                    ${item.disponivel ? 'Disponível' : 'Indisponível'}
+                                </span>
+                                ${item.destaque ? '<span class="badge bg-warning text-dark"><i class="fas fa-star"></i> Destaque</span>' : ''}
+                            </div>
+                            <div class="item-actions">
+                                <button class="btn btn-sm btn-primary btn-action" onclick="editarItem(${item.id})">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn btn-sm btn-${item.disponivel ? 'warning' : 'success'} btn-action" onclick="toggleDisponibilidade(${item.id})">
+                                    <i class="fas fa-${item.disponivel ? 'eye-slash' : 'eye'}"></i> ${item.disponivel ? 'Ocultar' : 'Exibir'}
+                                </button>
+                                <button class="btn btn-sm btn-danger btn-action" onclick="excluirItem(${item.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            atualizarEstatisticas();
+        }
+
+        function getCategoriaIcon(categoria) {
+            const icons = {
+                burgers: 'hamburger',
+                bebida: 'glass-water',
+                acompanhamento: 'french-fries',
+                sobremesa: 'ice-cream',
+                Combo: 'box'
+            };
+            return icons[categoria] || 'utensils';
+        }
+
+        function salvarNoLocalStorage() {
+            localStorage.setItem('menuItens', JSON.stringify(menuItens));
+        }
+
+        async function salvarItem() {
+            const form = document.getElementById('form-item');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const item = {
+                nome: document.getElementById('item-nome').value,
+                categoria: document.getElementById('item-categoria').value,
+                preco: parseFloat(document.getElementById('item-preco').value),
+                descricao: document.getElementById('item-descricao').value,
+                disponivel: document.getElementById('item-disponivel').checked,
+                destaque: document.getElementById('item-destaque').checked,
+                imagem: document.getElementById('item-imagem').value,
+                quantidade: parseInt(document.getElementById('item-quantidade').value) || 0
+            };
+
+            try {
+                let response;
+                if (editandoId) {
+                    response = await fetch(`${API_URL}/produtos/${editandoId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(item)
+                    });
+                } else {
+                    response = await fetch(`${API_URL}/produtos`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(item)
+                    });
+                }
+
+                if (!response.ok) throw new Error('Erro ao salvar produto');
+
+                const resultado = await response.json();
+                
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalAddItem'));
+                modal.hide();
+                
+                limparFormulario();
+                
+                await carregarItens();
+                
+                mostrarAlerta(editandoId ? 'Produto atualizado com sucesso!' : 'Produto adicionado com sucesso!', 'success');
+            } catch (error) {
+                console.error('Erro ao salvar produto:', error);
+                mostrarAlerta('Erro ao salvar produto. Tente novamente.', 'danger');
+            }
+        }
+
+        function editarItem(id) {
+            editandoId = id;
+            const item = menuItens.find(i => i.id === id);
+            
+            document.getElementById('modal-title-text').textContent = 'Editar Item';
+            document.getElementById('item-id').value = item.id;
+            document.getElementById('item-nome').value = item.nome;
+            document.getElementById('item-categoria').value = item.categoria;
+            document.getElementById('item-preco').value = item.preco;
+            document.getElementById('item-descricao').value = item.descricao;
+            document.getElementById('item-disponivel').checked = item.disponivel;
+            document.getElementById('item-destaque').checked = item.destaque;
+            document.getElementById('item-imagem').value = item.imagem;
+            document.getElementById('item-quantidade').value = item.quantidade || 0;
+            
+            if (item.imagem) {
+                previewImagem();
+            }
+            
+            const modal = new bootstrap.Modal(document.getElementById('modalAddItem'));
+            modal.show();
+        }
+
+        async function excluirItem(id) {
+            const item = menuItens.find(i => i.id === id);
+            if (confirm(`Tem certeza que deseja excluir "${item.nome}"?`)) {
+                try {
+                    const response = await fetch(`${API_URL}/produtos/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (!response.ok) throw new Error('Erro ao excluir produto');
+
+                    await carregarItens();
+                    mostrarAlerta('Produto excluído com sucesso!', 'danger');
+                } catch (error) {
+                    console.error('Erro ao excluir produto:', error);
+                    mostrarAlerta('Erro ao excluir produto. Tente novamente.', 'danger');
+                }
+            }
+        }
+
+        async function toggleDisponibilidade(id) {
+            const item = menuItens.find(i => i.id === id);
+            try {
+                const response = await fetch(`${API_URL}/produtos/${id}/disponibilidade`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ disponivel: !item.disponivel })
+                });
+
+                if (!response.ok) throw new Error('Erro ao atualizar disponibilidade');
+
+                await carregarItens();
+                mostrarAlerta(`Produto ${!item.disponivel ? 'disponibilizado' : 'ocultado'} com sucesso!`, 'info');
+            } catch (error) {
+                console.error('Erro ao atualizar disponibilidade:', error);
+                mostrarAlerta('Erro ao atualizar disponibilidade. Tente novamente.', 'danger');
+            }
+        }
+
+        function limparFormulario() {
+            editandoId = null;
+            document.getElementById('modal-title-text').textContent = 'Adicionar Novo Item';
+            document.getElementById('form-item').reset();
+            document.getElementById('preview-container').style.display = 'none';
+        }
+
+        function previewImagem() {
+            const url = document.getElementById('item-imagem').value;
+            const previewContainer = document.getElementById('preview-container');
+            const previewImg = document.getElementById('preview-img');
+            
+            if (url) {
+                previewImg.src = url;
+                previewContainer.style.display = 'block';
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+
+        function filtrarItensArray() {
+            const searchTerm = document.getElementById('filter-search').value.toLowerCase();
+            const category = document.getElementById('filter-category').value;
+            const status = document.getElementById('filter-status').value;
+            
+            return menuItens.filter(item => {
+                const matchSearch = item.nome.toLowerCase().includes(searchTerm) || 
+                                  item.descricao.toLowerCase().includes(searchTerm);
+                const matchCategory = !category || item.categoria === category;
+                const matchStatus = !status || (status === 'disponivel' ? item.disponivel : !item.disponivel);
+                
+                return matchSearch && matchCategory && matchStatus;
+            });
+        }
+
+        function filtrarItens() {
+            renderizarItens();
+        }
+
+        function limparFiltros() {
+            document.getElementById('filter-search').value = '';
+            document.getElementById('filter-category').value = '';
+            document.getElementById('filter-status').value = '';
+            renderizarItens();
+        }
+
+        function atualizarEstatisticas() {
+            const total = menuItens.length;
+            const disponiveis = menuItens.filter(i => i.disponivel).length;
+            const indisponiveis = total - disponiveis;
+            const categorias = new Set(menuItens.map(i => i.categoria)).size;
+            
+            document.getElementById('total-itens').textContent = total;
+            document.getElementById('itens-disponiveis').textContent = disponiveis;
+            document.getElementById('itens-indisponiveis').textContent = indisponiveis;
+            document.getElementById('total-categorias').textContent = categorias;
+        }
+
+        function mostrarAlerta(mensagem, tipo) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${tipo} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                ${mensagem}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        function voltarDashboard() {
+            window.location.href = 'dashboardPedidos.html';
+        }
+
+        document.getElementById('modalAddItem').addEventListener('hidden.bs.modal', function () {
+            limparFormulario();
+        });
+    </script>
+
+</body>
+</html>

@@ -70,6 +70,115 @@ app.post("/cadastro", (req, res) => {
     res.status(200).json({mensagem: "Usuario adicionado!"});
 });
 
+app.get("/produtos", async (req, res) => {
+    try {
+        const [produtos] = await db.execute("SELECT * FROM Produtos ORDER BY Categoria, Nome");
+        res.status(200).json(produtos);
+    } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+        res.status(500).json({ mensagem: "Erro ao buscar produtos do cardápio" });
+    }
+});
+
+app.get("/produtos/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [produtos] = await db.execute("SELECT * FROM Produtos WHERE ID = ?", [id]);
+        if (produtos.length === 0) {
+            return res.status(404).json({ mensagem: "Produto não encontrado" });
+        }
+        res.status(200).json(produtos[0]);
+    } catch (error) {
+        console.error("Erro ao buscar produto:", error);
+        res.status(500).json({ mensagem: "Erro ao buscar produto" });
+    }
+});
+
+app.post("/produtos", async (req, res) => {
+    const { nome, categoria, preco, descricao, imagem, disponivel, destaque, quantidade } = req.body;
+
+    if (!nome || !categoria || !preco) {
+        return res.status(400).json({ mensagem: "Nome, categoria e preço são obrigatórios" });
+    }
+
+    try {
+        const [resultado] = await db.execute(
+            "INSERT INTO Produtos (Nome, Categoria, Preco_Unitario, Descricao, imagem, disponivel, destaque, Quantidade) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [nome, categoria, preco, descricao || null, imagem || null, disponivel !== false, destaque || false, quantidade || 0]
+        );
+        res.status(201).json({ 
+            mensagem: "Produto adicionado com sucesso!", 
+            id: resultado.insertId 
+        });
+    } catch (error) {
+        console.error("Erro ao adicionar produto:", error);
+        res.status(500).json({ mensagem: "Erro ao adicionar produto ao cardápio" });
+    }
+});
+
+app.put("/produtos/:id", async (req, res) => {
+    const { id } = req.params;
+    const { nome, categoria, preco, descricao, imagem, disponivel, destaque, quantidade } = req.body;
+
+    if (!nome || !categoria || !preco) {
+        return res.status(400).json({ mensagem: "Nome, categoria e preço são obrigatórios" });
+    }
+
+    try {
+        const [resultado] = await db.execute(
+            "UPDATE Produtos SET Nome = ?, Categoria = ?, Preco_Unitario = ?, Descricao = ?, imagem = ?, disponivel = ?, destaque = ?, Quantidade = ? WHERE ID = ?",
+            [nome, categoria, preco, descricao || null, imagem || null, disponivel !== false, destaque || false, quantidade || 0, id]
+        );
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ mensagem: "Produto não encontrado" });
+        }
+
+        res.status(200).json({ mensagem: "Produto atualizado com sucesso!" });
+    } catch (error) {
+        console.error("Erro ao atualizar produto:", error);
+        res.status(500).json({ mensagem: "Erro ao atualizar produto" });
+    }
+});
+
+app.delete("/produtos/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [resultado] = await db.execute("DELETE FROM Produtos WHERE ID = ?", [id]);
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ mensagem: "Produto não encontrado" });
+        }
+
+        res.status(200).json({ mensagem: "Produto excluído com sucesso!" });
+    } catch (error) {
+        console.error("Erro ao excluir produto:", error);
+        res.status(500).json({ mensagem: "Erro ao excluir produto" });
+    }
+});
+
+app.patch("/produtos/:id/disponibilidade", async (req, res) => {
+    const { id } = req.params;
+    const { disponivel } = req.body;
+
+    try {
+        const [resultado] = await db.execute(
+            "UPDATE Produtos SET disponivel = ? WHERE ID = ?",
+            [disponivel !== false, id]
+        );
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ mensagem: "Produto não encontrado" });
+        }
+
+        res.status(200).json({ mensagem: "Disponibilidade atualizada com sucesso!" });
+    } catch (error) {
+        console.error("Erro ao atualizar disponibilidade:", error);
+        res.status(500).json({ mensagem: "Erro ao atualizar disponibilidade" });
+    }
+});
+
 app.listen(3000, () => {
     console.log("Servidor rodando em http://localhost:3000");
 });

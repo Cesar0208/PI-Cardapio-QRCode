@@ -21,20 +21,16 @@ CREATE TABLE Clientes (
     Senha VARCHAR(255) NOT NULL 
 );
 
-CREATE TABLE Categorias (
-    ID INT PRIMARY KEY AUTO_INCREMENT,
-    Nome VARCHAR(50) UNIQUE NOT NULL
-);
-
 CREATE TABLE Produtos (
     ID INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(100) NOT NULL,
     Descricao TEXT,
     Quantidade INT NOT NULL DEFAULT 0,
     Preco_Unitario DECIMAL(10, 2) NOT NULL,
-    Categoria_ID INT,
-    
-    FOREIGN KEY (Categoria_ID) REFERENCES Categorias(ID)
+    Categoria ENUM('burgers', 'bebida', 'acompanhamento', 'sobremesa', 'Combo') NOT NULL,
+    imagem VARCHAR(500),
+    disponivel BOOLEAN DEFAULT TRUE,
+    destaque BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE Pedidos (
@@ -42,7 +38,7 @@ CREATE TABLE Pedidos (
     ID_Cliente INT NOT NULL,
     ID_Funcionario INT,
     Forma_Pagamento VARCHAR(50),
-    Status VARCHAR(50),
+    Status ENUM('novo', 'preparo', 'enviado', 'entregue', 'cancelado') DEFAULT 'novo',
     Valor DECIMAL(10, 2) NOT NULL,
     Horario_Pedido DATETIME NOT NULL,
     

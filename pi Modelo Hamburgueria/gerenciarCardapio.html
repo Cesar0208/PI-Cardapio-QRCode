@@ -209,11 +209,6 @@
             <a class="navbar-brand" href="#">
                 <i class="fas fa-hamburger me-2"></i>BurguerPI - Gerenciar Cardápio
             </a>
-            <div class="d-flex">
-                <button class="btn btn-light btn-sm" onclick="voltarDashboard()">
-                    <i class="fas fa-arrow-left me-1"></i>Voltar ao Dashboard
-                </button>
-            </div>
         </div>
     </nav>
 
@@ -700,10 +695,6 @@
             setTimeout(() => {
                 alertDiv.remove();
             }, 3000);
-        }
-
-        function voltarDashboard() {
-            window.location.href = 'dashboardPedidos.html';
         }
 
         document.getElementById('modalAddItem').addEventListener('hidden.bs.modal', function () {

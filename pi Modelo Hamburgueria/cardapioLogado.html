@@ -270,7 +270,7 @@
         }
 
         .price {
-            font-size: 1.25rem;
+            font-size: 1.25rem; 
             font-weight: 700;
             color: var(--primary-color);
         }
@@ -636,7 +636,7 @@
                     <a href="#" class="nav-link-custom active" onclick="closeMenu()">Cardápio</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link-custom" onclick="closeMenu()">Sobre</a>
+                    <a href="sobre.html" class="nav-link-custom" onclick="closeMenu()">Sobre</a>
                 </li>
                 <li class="nav-item">
                     <a href="#settingsOffcanvas" onclick="closeMenu()" class="nav-link-custom" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" aria-controls="settingsOffcanvas"><i class="fa-solid fa-user"></i></a>
@@ -711,151 +711,6 @@
         </div>
 
         <div class="row g-4" id="menuContainer">
-            
-            <div class="col-md-6 col-lg-3 menu-item" data-category="burger">
-                <div class="menu-card">
-                    <span class="badge-popular"><i class="fas fa-fire"></i> Mais Pedido</span>
-                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Classic Burger">
-                    <div class="card-body">
-                        <h4 class="item-title">Classic Burger</h4>
-                        <div class="item-rating">
-                            <span class="stars">★★★★★</span>
-                            <span style="color: #64748b; font-size: 0.85rem;">(4.8)</span>
-                        </div>
-                        <p class="item-desc">Pão brioche selado na manteiga, blend 160g, cheddar inglês, alface americana e tomate orgânico.</p>
-                        <div class="card-footer-custom">
-                            <span class="price">R$ 28,00</span>
-                            <button class="btn-add" onclick="addToCart('Classic Burger', 28.00, 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 menu-item" data-category="burger">
-                <div class="menu-card">
-                    <span class="badge-popular"><i class="fas fa-fire"></i> Mais Pedido</span>
-                    <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Bacon Supreme">
-                    <div class="card-body">
-                        <h4 class="item-title">Bacon Supreme</h4>
-                        <div class="item-rating">
-                            <span class="stars">★★★★★</span>
-                            <span style="color: #64748b; font-size: 0.85rem;">(5.0)</span>
-                        </div>
-                        <p class="item-desc">Blend 180g, tiras de bacon crocante, cebola caramelizada no shoyu e maionese de alho da casa.</p>
-                        <div class="card-footer-custom">
-                            <span class="price">R$ 34,50</span>
-                            <button class="btn-add" onclick="addToCart('Bacon Supreme', 34.50, 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 menu-item" data-category="burger">
-                <div class="menu-card">
-                    <span class="badge-new"><i class="fas fa-star"></i> Novo</span>
-                    <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Double Smash">
-                    <div class="card-body">
-                        <h4 class="item-title">Double Smash</h4>
-                        <div class="item-rating">
-                            <span class="stars">★★★★★</span>
-                            <span style="color: #64748b; font-size: 0.85rem;">(4.9)</span>
-                        </div>
-                        <p class="item-desc">Dois ultra smashes de 80g, quádruplo queijo prato e molho especial secreto.</p>
-                        <div class="card-footer-custom">
-                            <span class="price">R$ 32,00</span>
-                            <button class="btn-add" onclick="addToCart('Double Smash', 32.00, 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 menu-item" data-category="burger">
-                <div class="menu-card">
-                    <img src="https://images.unsplash.com/photo-1520072959219-c595dc3f312a?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Veggie Deluxe">
-                    <div class="card-body">
-                        <h4 class="item-title">Veggie Deluxe</h4>
-                        <div class="item-rating">
-                            <span class="stars">★★★★☆</span>
-                            <span style="color: #64748b; font-size: 0.85rem;">(4.6)</span>
-                        </div>
-                        <p class="item-desc">Hambúrguer de grão-de-bico com beterraba, rúcula, tomate seco e molho pesto vegano.</p>
-                        <div class="card-footer-custom">
-                            <span class="price">R$ 26,00</span>
-                            <button class="btn-add" onclick="addToCart('Veggie Deluxe', 26.00, 'https://images.unsplash.com/photo-1520072959219-c595dc3f312a?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 menu-item" data-category="acompanhamento">
-                <div class="menu-card">
-                    <img src="https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Batata Rústica">
-                    <div class="card-body">
-                        <h4 class="item-title">Batata Rústica</h4>
-                        <p class="item-desc">Corte caseiro com casca, alecrim, páprica defumada e maionese verde.</p>
-                        <div class="card-footer-custom">
-                            <span class="price">R$ 15,00</span>
-                            <button class="btn-add" onclick="addToCart('Batata Rústica', 15.00, 'https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 menu-item" data-category="acompanhamento">
-                <div class="menu-card">
-                    <img src="https://images.unsplash.com/photo-1639024471283-03518883512d?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Onion Rings">
-                    <div class="card-body">
-                        <h4 class="item-title">Onion Rings</h4>
-                        <p class="item-desc">Anéis de cebola empanados na farinha panko, super crocantes.</p>
-                        <div class="card-footer-custom">
-                            <span class="price">R$ 18,00</span>
-                            <button class="btn-add" onclick="addToCart('Onion Rings', 18.00, 'https://images.unsplash.com/photo-1639024471283-03518883512d?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 menu-item" data-category="bebida">
-                <div class="menu-card">
-                    <img src="https://images.unsplash.com/photo-1556710807-a9261921475f?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Milkshake">
-                    <div class="card-body">
-                        <h4 class="item-title">Milkshake Ovomaltine</h4>
-                        <p class="item-desc">Sorvete de baunilha batido com muito ovomaltine e calda de chocolate.</p>
-                        <div class="card-footer-custom">
-                            <span class="price">R$ 18,50</span>
-                            <button class="btn-add" onclick="addToCart('Milkshake Ovomaltine', 18.50, 'https://images.unsplash.com/photo-1556710807-a9261921475f?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 menu-item" data-category="bebida">
-                <div class="menu-card">
-                    <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Refrigerante">
-                    <div class="card-body">
-                        <h4 class="item-title">Refrigerante Lata</h4>
-                        <p class="item-desc">Coca-cola, Guaraná, Sprite ou Fanta (350ml).</p>
-                        <div class="card-footer-custom">
-                            <span class="price">R$ 6,00</span>
-                            <button class="btn-add" onclick="addToCart('Refrigerante Lata', 6.00, 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-3 menu-item" data-category="sobremesa">
-                <div class="menu-card">
-                    <img src="https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Brownie">
-                    <div class="card-body">
-                        <h4 class="item-title">Brownie da Casa</h4>
-                        <p class="item-desc">Brownie meio amargo servido quente com bola de sorvete de creme.</p>
-                        <div class="card-footer-custom">
-                            <span class="price">R$ 22,00</span>
-                            <button class="btn-add" onclick="addToCart('Brownie da Casa', 22.00, 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
         </div>
     </main>

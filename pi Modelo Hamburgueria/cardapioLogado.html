@@ -11,10 +11,10 @@
 
     <style>
         :root {
-            --primary-color: #f700009a;
-            --secondary-color: #ff00009a;
-            --accent-color: #000000;
-            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --primary-color: #D97706;
+            --secondary-color: #EA580C;
+            --accent-color: #92400E;
+            --bg-gradient: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
             --glass-header: rgba(7, 0, 0, 0);
             --card-bg: #ffffff;
         }
@@ -306,6 +306,312 @@
             right: 20px;
             z-index: 1100;
         }
+
+        /* --- Cart Sidebar --- */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.active {
+            right: 0;
+        }
+
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            display: none;
+        }
+
+        .cart-overlay.active {
+            display: block;
+        }
+
+        .cart-header {
+            padding: 20px;
+            background: var(--secondary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .cart-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            align-items: center;
+        }
+
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1e293b;
+        }
+
+        .cart-item-price {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cart-item-controls button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .cart-item-controls button:hover {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .cart-item-remove {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .cart-footer {
+            padding: 20px;
+            border-top: 2px solid #f1f5f9;
+            background: #f8fafc;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+
+        .cart-total-value {
+            color: var(--primary-color);
+        }
+
+        .cart-checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .cart-checkout-btn:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+
+        .cart-empty i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        /* --- Promoção Banner --- */
+        .promo-banner {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .promo-banner h4 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .promo-banner p {
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+            opacity: 0.95;
+        }
+
+        /* --- Badge de Novidade --- */
+        .badge-new {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #EF4444;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 1;
+        }
+
+        .badge-popular {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #10B981;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 1;
+        }
+
+        /* --- Stats Section --- */
+        .stats-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* --- Selo de Qualidade --- */
+        .quality-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 10px;
+        }
+
+        .quality-badge i {
+            color: #10B981;
+        }
+
+        /* --- Rating Stars --- */
+        .item-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .stars {
+            color: #FBBF24;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -336,7 +642,7 @@
                     <a href="#settingsOffcanvas" onclick="closeMenu()" class="nav-link-custom" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" aria-controls="settingsOffcanvas"><i class="fa-solid fa-user"></i></a>
                 </li>
                 <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
-                    <div class="cart-icon" title="Ver Carrinho">
+                    <div class="cart-icon" onclick="toggleCart()" title="Ver Carrinho">
                         <i class="fas fa-shopping-bag"></i>
                         <span class="cart-badge" id="cartCount">0</span>
                     </div>
@@ -355,10 +661,45 @@
         <div class="container">
             <h2>Experiência Artesanal</h2>
             <p>Ingredientes selecionados, sabores inesquecíveis e a melhor experiência gastronômica da cidade entregue na sua mesa.</p>
+            <div class="quality-badge">
+                <i class="fas fa-certificate"></i>
+                <span><strong>100% Artesanal</strong> | Ingredientes Frescos</span>
+            </div>
         </div>
     </div>
 
     <main class="container">
+        
+        <div class="promo-banner">
+            <h4><i class="fas fa-fire me-2"></i>Promoção Especial!</h4>
+            <p>Peça 2 burgers e ganhe 10% de desconto! Válido até o fim do mês.</p>
+        </div>
+
+        <div class="stats-section">
+            <h3 class="text-center mb-3" style="color: var(--accent-color); font-weight: 700;">Por que escolher a BurguerPI?</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-hamburger"></i></div>
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Burgers Vendidos/Mês</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-star"></i></div>
+                    <div class="stat-number">4.9</div>
+                    <div class="stat-label">Avaliação Média</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-number">30min</div>
+                    <div class="stat-label">Tempo Médio de Entrega</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-number">1.200+</div>
+                    <div class="stat-label">Clientes Satisfeitos</div>
+                </div>
+            </div>
+        </div>
         
         <div class="category-filters">
             <button class="filter-btn active" onclick="filterMenu('todos', this)">Todos</button>
@@ -372,13 +713,18 @@
             
             <div class="col-md-6 col-lg-3 menu-item" data-category="burger">
                 <div class="menu-card">
+                    <span class="badge-popular"><i class="fas fa-fire"></i> Mais Pedido</span>
                     <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Classic Burger">
                     <div class="card-body">
                         <h4 class="item-title">Classic Burger</h4>
+                        <div class="item-rating">
+                            <span class="stars">★★★★★</span>
+                            <span style="color: #64748b; font-size: 0.85rem;">(4.8)</span>
+                        </div>
                         <p class="item-desc">Pão brioche selado na manteiga, blend 160g, cheddar inglês, alface americana e tomate orgânico.</p>
                         <div class="card-footer-custom">
                             <span class="price">R$ 28,00</span>
-                            <button class="btn-add" onclick=""><i class="fas fa-plus"></i></button>
+                            <button class="btn-add" onclick="addToCart('Classic Burger', 28.00, 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -386,13 +732,18 @@
 
             <div class="col-md-6 col-lg-3 menu-item" data-category="burger">
                 <div class="menu-card">
+                    <span class="badge-popular"><i class="fas fa-fire"></i> Mais Pedido</span>
                     <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Bacon Supreme">
                     <div class="card-body">
                         <h4 class="item-title">Bacon Supreme</h4>
+                        <div class="item-rating">
+                            <span class="stars">★★★★★</span>
+                            <span style="color: #64748b; font-size: 0.85rem;">(5.0)</span>
+                        </div>
                         <p class="item-desc">Blend 180g, tiras de bacon crocante, cebola caramelizada no shoyu e maionese de alho da casa.</p>
                         <div class="card-footer-custom">
                             <span class="price">R$ 34,50</span>
-                            <button class="btn-add" onclick=""><i class="fas fa-plus"></i></button>
+                            <button class="btn-add" onclick="addToCart('Bacon Supreme', 34.50, 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -400,13 +751,18 @@
 
             <div class="col-md-6 col-lg-3 menu-item" data-category="burger">
                 <div class="menu-card">
+                    <span class="badge-new"><i class="fas fa-star"></i> Novo</span>
                     <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Double Smash">
                     <div class="card-body">
                         <h4 class="item-title">Double Smash</h4>
+                        <div class="item-rating">
+                            <span class="stars">★★★★★</span>
+                            <span style="color: #64748b; font-size: 0.85rem;">(4.9)</span>
+                        </div>
                         <p class="item-desc">Dois ultra smashes de 80g, quádruplo queijo prato e molho especial secreto.</p>
                         <div class="card-footer-custom">
                             <span class="price">R$ 32,00</span>
-                            <button class="btn-add" onclick=""><i class="fas fa-plus"></i></button>
+                            <button class="btn-add" onclick="addToCart('Double Smash', 32.00, 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -417,10 +773,14 @@
                     <img src="https://images.unsplash.com/photo-1520072959219-c595dc3f312a?w=500&auto=format&fit=crop&q=60" class="thumb" alt="Veggie Deluxe">
                     <div class="card-body">
                         <h4 class="item-title">Veggie Deluxe</h4>
+                        <div class="item-rating">
+                            <span class="stars">★★★★☆</span>
+                            <span style="color: #64748b; font-size: 0.85rem;">(4.6)</span>
+                        </div>
                         <p class="item-desc">Hambúrguer de grão-de-bico com beterraba, rúcula, tomate seco e molho pesto vegano.</p>
                         <div class="card-footer-custom">
                             <span class="price">R$ 26,00</span>
-                            <button class="btn-add" onclick=""><i class="fas fa-plus"></i></button>
+                            <button class="btn-add" onclick="addToCart('Veggie Deluxe', 26.00, 'https://images.unsplash.com/photo-1520072959219-c595dc3f312a?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -434,7 +794,7 @@
                         <p class="item-desc">Corte caseiro com casca, alecrim, páprica defumada e maionese verde.</p>
                         <div class="card-footer-custom">
                             <span class="price">R$ 15,00</span>
-                            <button class="btn-add" onclick=""><i class="fas fa-plus"></i></button>
+                            <button class="btn-add" onclick="addToCart('Batata Rústica', 15.00, 'https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -448,7 +808,7 @@
                         <p class="item-desc">Anéis de cebola empanados na farinha panko, super crocantes.</p>
                         <div class="card-footer-custom">
                             <span class="price">R$ 18,00</span>
-                            <button class="btn-add" onclick=""><i class="fas fa-plus"></i></button>
+                            <button class="btn-add" onclick="addToCart('Onion Rings', 18.00, 'https://images.unsplash.com/photo-1639024471283-03518883512d?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -462,7 +822,7 @@
                         <p class="item-desc">Sorvete de baunilha batido com muito ovomaltine e calda de chocolate.</p>
                         <div class="card-footer-custom">
                             <span class="price">R$ 18,50</span>
-                            <button class="btn-add" onclick=""><i class="fas fa-plus"></i></button>
+                            <button class="btn-add" onclick="addToCart('Milkshake Ovomaltine', 18.50, 'https://images.unsplash.com/photo-1556710807-a9261921475f?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -476,7 +836,7 @@
                         <p class="item-desc">Coca-cola, Guaraná, Sprite ou Fanta (350ml).</p>
                         <div class="card-footer-custom">
                             <span class="price">R$ 6,00</span>
-                            <button class="btn-add" onclick=""><i class="fas fa-plus"></i></button>
+                            <button class="btn-add" onclick="addToCart('Refrigerante Lata', 6.00, 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -490,7 +850,7 @@
                         <p class="item-desc">Brownie meio amargo servido quente com bola de sorvete de creme.</p>
                         <div class="card-footer-custom">
                             <span class="price">R$ 22,00</span>
-                            <button class="btn-add" onclick=""><i class="fas fa-plus"></i></button>
+                            <button class="btn-add" onclick="addToCart('Brownie da Casa', 22.00, 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&auto=format&fit=crop&q=60')"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -519,6 +879,32 @@
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart me-2"></i>Meu Carrinho</h3>
+            <button class="cart-close" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Seu carrinho está vazio</p>
+            </div>
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span class="cart-total-value" id="cartTotal">R$ 0,00</span>
+            </div>
+            <button class="cart-checkout-btn" onclick="checkout()">
+                <i class="fas fa-credit-card me-2"></i>Finalizar Pedido
+            </button>
         </div>
     </div>
 
@@ -592,6 +978,108 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // --- Carrinho de Compras ---
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function updateCartUI() {
+            const cartCount = document.getElementById('cartCount');
+            const cartItems = document.getElementById('cartItems');
+            const cartFooter = document.getElementById('cartFooter');
+            const cartTotal = document.getElementById('cartTotal');
+
+            // Atualizar contador
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+
+            // Se carrinho vazio
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="cart-empty">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Seu carrinho está vazio</p>
+                    </div>
+                `;
+                cartFooter.style.display = 'none';
+                return;
+            }
+
+            // Renderizar itens
+            cartItems.innerHTML = cart.map((item, index) => `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">${item.name}</div>
+                        <div class="cart-item-price">R$ ${item.price.toFixed(2)}</div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button onclick="changeQuantity(${index}, -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="changeQuantity(${index}, 1)">+</button>
+                    </div>
+                    <button class="cart-item-remove" onclick="removeFromCart(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            // Calcular total
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotal.textContent = `R$ ${total.toFixed(2)}`;
+            cartFooter.style.display = 'block';
+        }
+
+        function addToCart(name, price, image) {
+            const existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ name, price, image, quantity: 1 });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartUI();
+
+            // Mostrar toast
+            const toast = new bootstrap.Toast(document.getElementById('cartToast'));
+            toast.show();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartUI();
+        }
+
+        function changeQuantity(index, change) {
+            cart[index].quantity += change;
+            
+            if (cart[index].quantity <= 0) {
+                removeFromCart(index);
+            } else {
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartUI();
+            }
+        }
+
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            const overlay = document.getElementById('cartOverlay');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function checkout() {
+            if (cart.length === 0) return;
+            
+            // Redirecionar para página de pagamento
+            window.location.href = 'pagamento.html';
+        }
+
+        // Inicializar carrinho ao carregar página
+        document.addEventListener('DOMContentLoaded', updateCartUI);
+
         // --- Lógica do Carrinho ---
         let cartCount = 0;
         const badge = document.getElementById('cartCount');

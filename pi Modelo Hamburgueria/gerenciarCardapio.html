@@ -322,7 +322,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="item-categoria" class="form-label">Categoria *</label>
-                                <select class="form-select" id="item-categoria" required>
+                                <select class="form-select" id="item-categoria" required onchange="sugerirImagemPorCategoria()">
                                     <option value="">Selecione...</option>
                                     <option value="burgers">Burgers</option>
                                     <option value="bebida">Bebida</option>
@@ -355,6 +355,7 @@
                             <div class="col-md-12 mb-3">
                                 <label for="item-imagem" class="form-label">URL da Imagem</label>
                                 <input type="url" class="form-control" id="item-imagem" placeholder="https://exemplo.com/imagem.jpg" onchange="previewImagem()">
+                                <small class="text-muted">Selecione uma categoria para sugestão automática de imagem</small>
                                 <div id="preview-container" style="display: none;">
                                     <img id="preview-img" class="preview-image" alt="Preview">
                                 </div>
@@ -509,6 +510,27 @@
                 Combo: 'box'
             };
             return icons[categoria] || 'utensils';
+        }
+
+        function getImagemPadrao(categoria) {
+            const imagens = {
+                burgers: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60',
+                bebida: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500&auto=format&fit=crop&q=60',
+                acompanhamento: 'https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=500&auto=format&fit=crop&q=60',
+                sobremesa: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&auto=format&fit=crop&q=60',
+                Combo: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&auto=format&fit=crop&q=60'
+            };
+            return imagens[categoria] || 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60';
+        }
+
+        function sugerirImagemPorCategoria() {
+            const categoria = document.getElementById('item-categoria').value;
+            const campoImagem = document.getElementById('item-imagem');
+            
+            if (!campoImagem.value && categoria) {
+                campoImagem.value = getImagemPadrao(categoria);
+                previewImagem();
+            }
         }
 
         function salvarNoLocalStorage() {

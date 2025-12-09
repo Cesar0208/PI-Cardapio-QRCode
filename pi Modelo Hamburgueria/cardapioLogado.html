@@ -14,7 +14,7 @@
             --primary-color: #D97706;
             --secondary-color: #EA580C;
             --accent-color: #92400E;
-            --bg-gradient: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            --bg-gradient: linear-gradient(135deg, #FEF3C7 0%, #f3efde 100%);
             --glass-header: rgba(7, 0, 0, 0);
             --card-bg: #ffffff;
         }
@@ -45,7 +45,7 @@
         }
 
         .loader-text {
-            color: white;
+            color: #000;
             font-size: 1.2rem;
             font-weight: 600;
             letter-spacing: 1px;
@@ -961,6 +961,65 @@
             const elementoNome = document.getElementById("mostrarNomeUsuario");
             if (elementoNome) {
                 elementoNome.innerText = "Bem-vindo(a), " + primeiroNome + "!";
+            }
+        }
+
+         document.addEventListener("DOMContentLoaded", () => {
+            carregarCardapio();
+        });
+
+        async function carregarCardapio() {
+            try {
+                // 1. Consome a sua API do Back-end
+                const response = await fetch('http://localhost:3000/produtos');
+                const produtos = await response.json();
+
+                const container = document.getElementById('menuContainer');
+                
+                // Limpa o container (caso tenha algo carregando)
+                container.innerHTML = '';
+
+                // 2. Itera sobre cada produto retornado do banco
+                produtos.forEach(produto => {
+                    if (produto.disponivel == 0) {
+                        return;
+                    };
+
+                    // Formata o preço (Ex: de 28.00 para R$ 28,00)
+                    const precoFormatado = new Intl.NumberFormat('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    }).format(produto.Preco_Unitario);
+
+                    // 3. Monta o HTML dinâmico
+                    // ATENÇÃO: Verifique se os nomes produto.Nome, produto.Descricao, etc
+                    // batem exatamente com as colunas do seu Banco de Dados.
+                    const html = `
+                    <div class="col-md-6 col-lg-3 menu-item" data-category="${produto.Categoria || 'geral'}">
+                        <div class="menu-card">
+                            <img src="${produto.imagem || 'Foto de exemplo'}" class="thumb" alt="${produto.Nome}">
+                            <div class="card-body">
+                                <h4 class="item-title">${produto.Nome}</h4>
+                                <p class="item-desc">${produto.Descricao}</p>
+                                ${produto.destaque ? '<span class="badge bg-warning text-dark"><i class="fas fa-star"></i> Destaque</span>' : ''}
+                                <div class="card-footer-custom">
+                                    <span class="price">${precoFormatado}</span>
+                                    <button class="btn-add" onclick="addToCart('${produto.Nome}', ${produto.Preco_Unitario}, '${produto.imagem}')">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+
+                    // Adiciona o card ao container
+                    container.innerHTML += html;
+                });
+
+            } catch (error) {
+                console.error("Erro ao carregar cardápio:", error);
+                alert("Não foi possível carregar o cardápio no momento.");
             }
         }
 

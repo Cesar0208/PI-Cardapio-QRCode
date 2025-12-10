@@ -62,7 +62,8 @@
             text-align: center;
         }
 
-        .status-badge.novo, .status-badge.preparo { background-color: #fef3c7; color: var(--warning-color); }
+        .status-badge.novo { background-color: #0ea5e9; color: white; }
+        .status-badge.preparo { background-color: #fef3c7; color: var(--warning-color); }
         .status-badge.enviado { background-color: #dbeafe; color: var(--info-color); }
         .status-badge.entregue { background-color: #d1fae5; color: var(--success-color); }
         .status-badge.cancelado { background-color: #fee2e2; color: var(--danger-color); }
@@ -120,7 +121,7 @@
                         <i class="fas fa-concierge-bell fa-2x text-warning me-3"></i>
                         <div>
                             <div class="kpi-title">Em Preparo (Cozinha)</div>
-                            <div class="kpi-value text-warning" id="kpi-em-preparo">12</div>
+                            <div class="kpi-value text-warning" id="kpi-em-preparo"></div>
                         </div>
                     </div>
                 </div>
@@ -132,7 +133,7 @@
                         <i class="fas fa-motorcycle fa-2x text-info me-3"></i>
                         <div>
                             <div class="kpi-title">Em Rota (Entrega)</div>
-                            <div class="kpi-value text-info" id="kpi-em-rota">5</div>
+                            <div class="kpi-value text-info" id="kpi-em-rota"></div>
                         </div>
                     </div>
                 </div>
@@ -144,7 +145,7 @@
                         <i class="fas fa-check-circle fa-2x text-success me-3"></i>
                         <div>
                             <div class="kpi-title">Entregues (Hoje)</div>
-                            <div class="kpi-value text-success" id="kpi-entregues-hoje">187</div>
+                            <div class="kpi-value text-success" id="kpi-entregues-hoje"></div>
                         </div>
                     </div>
                 </div>
@@ -207,46 +208,7 @@
                                     <th>Ações</th> </tr>
                             </thead>
                             <tbody id="pedidos-table-body">
-                                <tr data-status="entregue" data-date="2025-12-03" data-id="4055" data-cliente="José S." data-itens="1x Classic Burger, 1x Coca-Cola" data-endereco="Rua A, 123" data-obs="Sem picles" data-func="Ana L. (101)">
-                                    <td>#4055</td>
-                                    <td>03/12/25 15:15</td>
-                                    <td>José S. (***.123.***-00)</td>
-                                    <td>R$ 48,00</td>
-                                    <td>Cartão Débito</td>
-                                    <td><span class="status-badge entregue">Entregue</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#orderDetailsModal" onclick="showOrderDetails(4055)">
-                                            <i class="fas fa-eye"></i> Ver
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr data-status="enviado" data-date="2025-12-03" data-id="4054" data-cliente="Maria C." data-itens="2x Bacon Supreme, 1x Milkshake" data-endereco="Av. B, 456" data-obs="Nenhuma" data-func="Bruno M. (102)">
-                                    <td>#4054</td>
-                                    <td>03/12/25 15:08</td>
-                                    <td>Maria C. (***.456.***-01)</td>
-                                    <td>R$ 85,50</td>
-                                    <td>PIX</td>
-                                    <td><span class="status-badge enviado">Em Rota</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#orderDetailsModal" onclick="showOrderDetails(4054)">
-                                            <i class="fas fa-eye"></i> Ver
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr data-status="preparo" data-date="2025-12-03" data-id="4053" data-cliente="João P." data-itens="1x Classic Burger, 1x Batata Rústica" data-endereco="Rua C, 789" data-obs="Molho extra" data-func="Carlos E. (103)">
-                                    <td>#4053</td>
-                                    <td>03/12/25 15:00</td>
-                                    <td>João P. (***.789.***-02)</td>
-                                    <td>R$ 32,00</td>
-                                    <td>Dinheiro</td>
-                                    <td><span class="status-badge preparo">Em Preparo</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#orderDetailsModal" onclick="showOrderDetails(4053)">
-                                            <i class="fas fa-eye"></i> Ver
-                                        </button>
-                                    </td>
-                                </tr>
-                                </tbody>
+                            </tbody>
                         </table>
                     </div>
                     <small class="text-muted mt-2 d-block">Clique em "Ver" para abrir os detalhes do pedido.</small>
@@ -297,44 +259,9 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicialização e atualização de tempo
-            const now = new Date();
-            const formattedTime = now.toLocaleDateString('pt-BR') + ' às ' + now.toLocaleTimeString('pt-BR').substring(0, 5);
-            document.getElementById('lastUpdated').textContent = formattedTime;
-
-            // Função que abre o modal e preenche os detalhes
-            window.showOrderDetails = function(orderId) {
-                // Em um sistema real, você faria um FETCH para a API: 
-                // fetch(`/api/pedido/${orderId}`).then(res => res.json()).then(data => { ... });
-                
-                // *** SIMULAÇÃO DE DADOS DE DETALHE ***
-                const row = document.querySelector(`tr[data-id="${orderId}"]`);
-                if (!row) return;
-
-                const statusBadge = row.querySelector('.status-badge').outerHTML;
-                const itensList = row.getAttribute('data-itens').split(', ').map(item => 
-                    `<li class="list-group-item">${item}</li>`
-                ).join('');
-
-                // Preencher o Modal
-                document.getElementById('modal-order-id').textContent = `#${orderId}`;
-                document.getElementById('modal-cliente').textContent = row.getAttribute('data-cliente');
-                document.getElementById('modal-endereco').textContent = row.getAttribute('data-endereco');
-                document.getElementById('modal-status').innerHTML = statusBadge; // Usa o HTML do badge
-                document.getElementById('modal-funcionario').textContent = row.getAttribute('data-func');
-                document.getElementById('modal-itens').innerHTML = itensList;
-
-                const obs = row.getAttribute('data-obs');
-                const obsElement = document.getElementById('modal-obs');
-                obsElement.textContent = obs === 'Nenhuma' ? 'Nenhuma observação.' : obs;
-                // *** FIM DA SIMULAÇÃO ***
-            }
-
-            // --- Funções de Filtro (Mantidas do exemplo anterior) ---
-            window.applyTableFilters = function() {
+        window.applyTableFilters = function() {
                 const statusFilter = document.getElementById('status-filter').value;
                 const searchFilter = document.querySelector('.row.mb-3 input[type="text"]').value.toLowerCase();
                 const dateFilter = document.querySelector('.row.mb-3 input[type="date"]').value;
@@ -355,18 +282,257 @@
                 });
             }
 
-            window.resetTableFilters = function() {
+             window.resetTableFilters = function() {
                 document.getElementById('status-filter').value = 'all';
                 document.querySelector('.row.mb-3 input[type="text"]').value = '';
                 document.querySelector('.row.mb-3 input[type="date"]').value = '';
                 applyTableFilters();
             }
 
-            window.applyKpiFilter = function(period) {
-                console.log(`Filtro de KPI aplicado: ${period}`);
+        const DETAILS_API_URL = 'http://localhost:3000/pedidos/'; // URL base
+        const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+
+        function getStatusModalHtml(status) {
+            const statusMap = {
+                'novo': { text: 'Novo', class: 'text-primary' },
+                'preparo': { text: 'Em Preparo', class: 'text-warning' },
+                'enviado': { text: 'Em Rota', class: 'text-info' },
+                'entregue': { text: 'Entregue', class: 'text-success' },
+                'cancelado': { text: 'Cancelado', class: 'text-danger' },
+            };
+            
+            const info = statusMap[status] || { text: status, class: 'text-muted' };
+            
+            return `<h4 class="${info.class} fw-bold">${info.text}</h4>`;
+        }
+
+        async function showOrderDetails(orderId) {
+            const url = DETAILS_API_URL + orderId;
+            
+            // Elementos do Modal
+            const orderIdEl = document.getElementById('modal-order-id');
+            const clienteEl = document.getElementById('modal-cliente');
+            const statusEl = document.getElementById('modal-status');
+            const funcionarioEl = document.getElementById('modal-funcionario');
+            const enderecoEl = document.getElementById('modal-endereco');
+            const obsEl = document.getElementById('modal-obs');
+            const itensEl = document.getElementById('modal-itens');
+
+            // Limpa e define ID inicial
+            orderIdEl.textContent = `#${orderId}`;
+            clienteEl.textContent = 'Carregando...';
+            itensEl.innerHTML = '<li class="list-group-item">Buscando itens...</li>';
+            
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`Falha: HTTP ${response.status}`);
+                }
+
+                const result = await response.json();
+                const data = result.data;
+
+                if (!data) {
+                    throw new Error('Dados não encontrados.');
+                }
+
+                // 1. DADOS PRINCIPAIS
+                clienteEl.textContent = `${data.ClienteNome} (${data.ClienteCPF})`;
+                funcionarioEl.textContent = data.FuncionarioNome || 'Não atribuído';
+                enderecoEl.textContent = data.EnderecoEntrega || 'Endereço não disponível';
+                
+                // 2. STATUS
+                statusEl.innerHTML = getStatusModalHtml(data.Status);
+                
+                // 3. OBSERVAÇÕES
+                if (data.Observacoes && data.Observacoes.trim() !== '') {
+                    obsEl.textContent = data.Observacoes;
+                    obsEl.classList.remove('alert-light');
+                    obsEl.classList.add('alert-warning');
+                } else {
+                    obsEl.textContent = 'Nenhuma observação.';
+                    obsEl.classList.remove('alert-warning');
+                    obsEl.classList.add('alert-light');
+                }
+                
+                // 4. ITENS DO PEDIDO
+                itensEl.innerHTML = '';
+                if (data.ItensDetalhes) {
+                    // Dividir a string de itens (separador '||' definido no SQL)
+                    const itensArray = data.ItensDetalhes.split('||');
+                    
+                    itensArray.forEach(itemStr => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                        li.textContent = itemStr.trim();
+                        
+                        // Exemplo: se você tivesse o preço no SQL, poderia adicionar aqui
+                        // li.innerHTML = `${itemStr.trim()} <span class="badge bg-secondary">R$ XX,XX</span>`;
+                        
+                        itensEl.appendChild(li);
+                    });
+                } else {
+                    itensEl.innerHTML = '<li class="list-group-item text-muted">Nenhum item encontrado.</li>';
+                }
+
+                // Se o modal não estava aberto, ele abrirá automaticamente via data-bs-toggle (no botão)
+                
+            } catch (error) {
+                console.error(`Erro ao carregar modal do pedido ${orderId}:`, error.message);
+                clienteEl.textContent = 'Erro ao carregar dados.';
+                funcionarioEl.textContent = '';
+                statusEl.innerHTML = getStatusModalHtml('erro');
+                itensEl.innerHTML = '<li class="list-group-item text-danger">Falha ao conectar ou buscar dados.</li>';
+            }
+        }
+
+
+        const PEDIDOS_API_URL = 'http://localhost:3000/pedidos/listar';
+        const TABLE_BODY_ID = 'pedidos-table-body';
+
+        function getStatusBadgeHtml(status) {
+            const statusMap = {
+                'novo': { text: 'Novo', class: 'novo' },
+                'preparo': { text: 'Em Preparo', class: 'preparo' },
+                'enviado': { text: 'Em Rota', class: 'enviado' },
+                'entregue': { text: 'Entregue', class: 'entregue' },
+                'cancelado': { text: 'Cancelado', class: 'cancelado' },
+            };
+            
+            const info = statusMap[status] || { text: status, class: 'default' };
+            
+            // Retorna o HTML do Badge
+            return `<span class="status-badge ${info.class}">${info.text}</span>`;
+        }
+
+        /**
+         * Função principal que busca os pedidos e preenche a tabela.
+         */
+        async function carregarTabelaPedidos() {
+            const tbody = document.getElementById(TABLE_BODY_ID);
+            if (!tbody) {
+                console.error(`Elemento com ID '${TABLE_BODY_ID}' não encontrado.`);
+                return;
             }
 
-            window.applyTableFilters();
+            // Limpa o conteúdo existente da tabela antes de carregar
+            tbody.innerHTML = '<tr><td colspan="7">Carregando pedidos...</td></tr>'; 
+
+            try {
+                const response = await fetch(PEDIDOS_API_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`Falha na requisição: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.status !== 'success' || !Array.isArray(result.data)) {
+                    throw new Error('Formato de dados do servidor inválido.');
+                }
+
+                const pedidos = result.data;
+                tbody.innerHTML = ''; // Limpa novamente, agora para inserir os dados
+
+                if (pedidos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center">Nenhum pedido encontrado no momento.</td></tr>';
+                    return;
+                }
+
+                pedidos.forEach(pedido => {
+                    const dataHora = new Date(pedido.Horario_Pedido).toLocaleString('pt-BR', {
+                        day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit'
+                    });
+
+                    // Cria a linha (tr)
+                    const row = tbody.insertRow();
+                    
+                    // Coluna ID
+                    row.insertCell().textContent = `#${pedido.ID}`;
+                    
+                    // Coluna Data & Hora
+                    row.insertCell().textContent = dataHora;
+
+                    // Coluna Cliente (Nome e CPF)
+                    row.insertCell().textContent = `${pedido.ClienteNome} (${pedido.ClienteCPF.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '***.$2.***-$4')})`; 
+
+                    // Coluna Valor (Formato R$)
+                    row.insertCell().textContent = `R$ ${pedido.Valor}`;
+
+                    // Coluna Pagamento
+                    row.insertCell().textContent = pedido.Forma_Pagamento;
+
+                    // Coluna Status (Badge HTML)
+                    row.insertCell().innerHTML = getStatusBadgeHtml(pedido.Status);
+
+                    // Coluna Ações (Botão Ver)
+                    row.insertCell().innerHTML = `
+                        <button class="btn btn-sm btn-primary" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#orderDetailsModal" 
+                                onclick="showOrderDetails(${pedido.ID})">
+                            <i class="fas fa-eye"></i> Ver
+                        </button>
+                    `;
+                    
+                    // Opcional: Adicionar atributos de dados para o modal
+                    row.setAttribute('data-id', pedido.ID);
+                    row.setAttribute('data-status', pedido.Status);
+                    // ... adicione outros atributos de dados se o modal precisar deles ...
+                });
+
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-danger text-center">Falha ao carregar dados. Tente novamente.</td></tr>';
+            }
+        }
+
+        // Chamar a função para popular a tabela ao carregar a página
+        document.addEventListener('DOMContentLoaded', carregarTabelaPedidos);
+
+        const BASE_API_URL = 'http://localhost:3000/api/pedidos/contagem';
+        async function atualizarKPI(status, elementId) {
+            const elemento = document.getElementById(elementId);
+            
+            // Define um valor temporário enquanto busca
+            if (elemento) elemento.textContent = '...'; 
+            
+            const url = `${BASE_API_URL}?status=${status}`;
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                const contagem = data?.contagem;
+
+                if (contagem === undefined) {
+                    throw new Error("Resposta do servidor com formato inválido.");
+                }
+                
+                // Atualiza o elemento no HTML com o novo valor
+                if (elemento) {
+                    elemento.textContent = contagem;
+                }
+
+            } catch (error) {
+                if (elemento) {
+                    elemento.textContent = 'Erro';
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            const formattedTime = now.toLocaleDateString('pt-BR') + ' às ' + now.toLocaleTimeString('pt-BR').substring(0, 5);
+            document.getElementById('lastUpdated').textContent = formattedTime;
+            
+            atualizarKPI('preparo', 'kpi-em-preparo'); 
+            atualizarKPI('enviado', 'kpi-em-rota'); 
+            atualizarKPI('entregue', 'kpi-entregues-hoje'); 
         });
     </script>
 

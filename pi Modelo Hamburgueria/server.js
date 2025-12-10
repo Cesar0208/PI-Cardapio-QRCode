@@ -179,6 +179,137 @@ app.patch("/produtos/:id/disponibilidade", async (req, res) => {
     }
 });
 
+app.get("/pedidos/listar", async (req, res) => {
+
+    const sqlQuery = `
+        SELECT 
+            p.ID,
+            p.Horario_Pedido,
+            p.Valor,
+            p.Forma_Pagamento,
+            p.Status,
+            c.Nome AS ClienteNome,
+            c.CPF AS ClienteCPF,
+            -- A correção está nesta seção:
+            GROUP_CONCAT(
+                CONCAT(ip.Quantidade, 'x ', pr.Nome) 
+                ORDER BY pr.Nome ASC 
+                SEPARATOR '; ' 
+            ) AS ItensResumo 
+        FROM Pedidos p
+        JOIN Clientes c ON p.ID_Cliente = c.ID
+        JOIN Itens_Pedidos ip ON p.ID = ip.ID_Pedido
+        JOIN Produtos pr ON ip.ID_Produto = pr.ID
+        WHERE p.Status IN ('novo', 'preparo', 'enviado', 'entregue')
+        GROUP BY p.ID, p.Horario_Pedido, p.Valor, p.Forma_Pagamento, p.Status, c.Nome, c.CPF
+        ORDER BY p.Horario_Pedido ASC;
+    `;
+
+    try {
+        const [pedidos] = await db.execute(sqlQuery); 
+        
+        res.status(200).json({
+            status: 'success',
+            data: pedidos
+        });
+
+    } catch (err) {
+        console.error("Erro ao listar pedidos:", err);
+        res.status(500).json({
+            status: 'error',
+            message: 'Erro interno do servidor ao buscar a lista de pedidos.'
+        });
+    }
+});
+
+app.get("/pedidos/:id", async (req, res) => {
+    const id = req.params.id;
+
+    const sqlQuery = `
+        SELECT 
+            p.ID,
+            p.Valor,
+            p.Status,
+            p.Forma_Pagamento,
+            -- COLUNAS PLACEHOLDER: AJUSTE PARA ONDE ESTÁ SEU ENDEREÇO/OBS
+            'Rua Exemplo, 123 - Bairro Teste' AS EnderecoEntrega, 
+            'Sem picles e maionese no acompanhamento' AS Observacoes,
+            -- FIM COLUNAS PLACEHOLDER
+
+            c.Nome AS ClienteNome,
+            c.CPF AS ClienteCPF,
+            f.Nome AS FuncionarioNome,
+            
+            -- Busca todos os itens detalhados para o modal
+            GROUP_CONCAT(
+                CONCAT(ip.Quantidade, 'x ', pr.Nome) 
+                ORDER BY pr.Nome ASC 
+                SEPARATOR '||' 
+            ) AS ItensDetalhes 
+        FROM Pedidos p
+        JOIN Clientes c ON p.ID_Cliente = c.ID
+        LEFT JOIN Funcionarios f ON p.ID_Funcionario = f.ID -- LEFT JOIN, pois ID_Funcionario pode ser NULL
+        JOIN Itens_Pedidos ip ON p.ID = ip.ID_Pedido
+        JOIN Produtos pr ON ip.ID_Produto = pr.ID
+        WHERE p.ID = ?
+        GROUP BY 
+            p.ID, p.Valor, p.Status, p.Forma_Pagamento, c.Nome, c.CPF, f.Nome;
+    `;
+
+    try {
+        const [rows] = await db.execute(sqlQuery, [id]);
+        
+        if (rows.length === 0) {
+            return res.status(404).json({ status: 'error', message: 'Pedido não encontrado.' });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: rows[0]
+        });
+
+    } catch (err) {
+        console.error(`Erro ao buscar detalhes do pedido ${id}:`, err);
+        res.status(500).json({ status: 'error', message: 'Erro interno do servidor.' });
+    }
+});
+
+// Pegar valores sobre os pedidos (Em preparo, Rota de entrega e Entregues)
+app.get('/api/pedidos/contagem', async (req, res) => {
+    const status = req.query.status;
+
+    if (!status) {
+        return res.status(400).json({ status: 'error', message: 'O parâmetro "status" é obrigatório.' });
+    }
+
+    const sqlQuery = `
+        SELECT COUNT(*) AS total_contagem
+        FROM Pedidos
+        WHERE Status = ?
+        ${status === 'entregue' ? 'AND DATE(Horario_Pedido) = CURDATE()' : ''};
+    `;
+    
+    const values = [status];
+
+    try {
+        const [rows] = await db.execute(sqlQuery, values);
+        
+        const total = rows[0].total_contagem;
+        
+        res.status(200).json({
+            status: 'success',
+            contagem: total
+        });
+
+    } catch (err) {
+        console.error(`Erro ao buscar contagem para o status "${status}":`, err);
+        res.status(500).json({
+            status: 'error',
+            message: 'Erro interno do servidor.'
+        });
+    }
+});
+
 app.listen(3000, () => {
     console.log("Servidor rodando em http://localhost:3000");
 });

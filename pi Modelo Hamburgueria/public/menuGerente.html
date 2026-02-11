@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central do Gerente</title>
+    <style>
+        /* CSS - Estilo Simples */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9; /* Fundo cinza claro */
+            display: flex;
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center; /* Centraliza verticalmente */
+            height: 100vh; /* Altura total da tela */
+            margin: 0;
+        }
+
+        .painel {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Sombra suave */
+            text-align: center;
+            width: 300px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .botao {
+            display: block; /* Faz o botão ocupar a linha inteira */
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #007BFF; /* Azul padrão */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .botao:hover {
+            background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+        }
+
+        /* Cores diferentes para cada botão (opcional) */
+        .btn-financeiro { background-color: #807d04; } /* Verde */
+        .btn-financeiro:hover { background-color: #494800; }
+
+        .btn-pedidos { background-color: #6c757d; } /* Cinza */
+        .btn-pedidos:hover { background-color: #5a6268; }
+    </style>
+</head>
+<body>
+
+    <div class="painel">
+        <h1>Área do Admin</h1>
+        
+        <button class="botao" onclick="window.location.href = 'gerenciarCardapio.html'">Gerenciar Cardápio</button>
+        <button class="botao btn-financeiro" onclick="window.location.href = 'financeiro.html'">Financeiro</button>
+        <button class="botao btn-pedidos" onclick="window.location.href = 'dashboardPedidos.html'">Dashboard de Pedidos</button>
+    </div>
+</body>
+</html>

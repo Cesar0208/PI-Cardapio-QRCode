@@ -1,6 +1,7 @@
 const express = require("express");
 const db = require("./config/db");
 const cors = require("cors");
+const path = require('path')
 const { hashSenha, compararSenha } = require("./services/hashSenha")
 
 const app = express();
@@ -11,12 +12,16 @@ app.get("/", (req, res) => {
     res.send("API está em funcionamento!. Aqui será a rota principal");
 });
 
+app.get("/login.html", (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'))
+})
 
 
 
 
 
-// Área para cadastro de clientes
+
+// Área para login
 app.post("/login", async (req, res) => {
     const { email, senha } = req.body;
 
@@ -24,32 +29,61 @@ app.post("/login", async (req, res) => {
         return res.status(400).json({ mensagem: "Email e senha são obrigatórios." });
     }
 
-    try {
-        // CORREÇÃO: usar db.execute + await
-        const [users] = await db.execute("SELECT * FROM Clientes WHERE email = ?", [email]);
+    if(email.includes("@funcionario")) {
+        console.log("entrou if")
+        try {
+            const [funcionarios] = await db.execute("SELECT * FROM Funcionarios WHERE email = ?", [email])
 
-        if (users.length === 0) {
-            return res.status(401).json({ mensagem: "Credenciais inválidas." });
+            if (funcionarios.length === 0) {
+                return res.status(401).json({ mensagem: "Credenciais inválidas." });
+            }
+
+            const funcionario = funcionarios[0];
+
+            const isMatch = senha === funcionario.Senha;
+
+            if(!isMatch) {
+                return res.status(401).json({ mensagem: "Credenciais inválidas.11111111111111"});
+            }
+
+            return window.location.href = "dashboard.html";
+
+        } catch (error) {
+            console.error("Erro no processo de login:", error);
+            return res.status(500).json({ mensagem: "Erro interno do servidor ao tentar fazer login." });
         }
 
-        const user = users[0];
+    } else if(email.includes("@gerente")) {
+        const nome = "aaaaaaaaaa";
 
-        const isMatch = await compararSenha(senha, user.Senha) // compare sua senha
+    } else {
+        // Parte para clientes
+        try {
+            const [users] = await db.execute("SELECT * FROM Clientes WHERE email = ?", [email]);
 
-        if (!isMatch) {
-            return res.status(401).json({ mensagem: "Senha inválida."});
+            if (users.length === 0) {
+                return res.status(401).json({ mensagem: "Credenciais inválidas." });
+            }
+
+            const user = users[0];
+
+            const isMatch = await compararSenha(senha, user.Senha) // compare sua senha
+
+            if (!isMatch) {
+                return res.status(401).json({ mensagem: "Credenciais inválidas."});
+            }
+
+            delete user.Senha;  // remove a senha do retorno
+
+            return res.status(200).json({
+                mensagem: "Login realizado com sucesso!",
+                usuario: user
+            });
+
+        } catch (error) {
+            console.error("Erro no processo de login:", error);
+            return res.status(500).json({ mensagem: "Erro interno do servidor ao tentar fazer login." });
         }
-
-        delete user.Senha;  // remove a senha do retorno
-
-        return res.status(200).json({
-            mensagem: "Login realizado com sucesso!",
-            usuario: user
-        });
-
-    } catch (error) {
-        console.error("Erro no processo de login:", error);
-        return res.status(500).json({ mensagem: "Erro interno do servidor ao tentar fazer login." });
     }
 });   
 
@@ -228,6 +262,7 @@ app.get("/pedidos/listar", async (req, res) => {
 app.get("/pedidos/:id", async (req, res) => {
     const id = req.params.id;
 
+    // Arrumar isso aqui, observacoes e endereco
     const sqlQuery = `
         SELECT 
             p.ID,

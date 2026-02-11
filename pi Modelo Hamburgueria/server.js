@@ -1,6 +1,7 @@
 const express = require("express");
 const db = require("./config/db");
 const cors = require("cors");
+const { hashSenha, compararSenha } = require("./services/hashSenha")
 
 const app = express();
 app.use(cors());
@@ -33,7 +34,7 @@ app.post("/login", async (req, res) => {
 
         const user = users[0];
 
-        const isMatch = senha === user.Senha; // compare sua senha
+        const isMatch = await compararSenha(senha, user.Senha) // compare sua senha
 
         if (!isMatch) {
             return res.status(401).json({ mensagem: "Senha inválida."});
@@ -52,7 +53,7 @@ app.post("/login", async (req, res) => {
     }
 });   
 
-app.post("/cadastro", (req, res) => {
+app.post("/cadastro", async (req, res) => {
     const {nome, email, cpf, telefone, senha, confirmaSenha} = req.body;
 
     if(!nome || !email || !cpf || !telefone || !senha || !confirmaSenha) {
@@ -63,7 +64,9 @@ app.post("/cadastro", (req, res) => {
         return res.status(406).json({mensagem: "As senhas não estão condizentes"})
     };
 
-    db.query("INSERT INTO Clientes(Nome, CPF, Telefone, Email, Senha) VALUES (?, ?, ?, ?, ?)", [nome, cpf, telefone, email, senha], (err, resultado) => {
+    const senhaComHash = await hashSenha(senha)
+
+    db.query("INSERT INTO Clientes(Nome, CPF, Telefone, Email, Senha) VALUES (?, ?, ?, ?, ?)", [nome, cpf, telefone, email, senhaComHash], (err, resultado) => {
         if (err) return res.status(500).json({erro: err});
     })
 

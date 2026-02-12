@@ -27,7 +27,7 @@ CREATE TABLE Produtos (
     Descricao TEXT,
     Quantidade INT NOT NULL DEFAULT 0,
     Preco_Unitario DECIMAL(10, 2) NOT NULL,
-    Categoria ENUM('burgers', 'bebida', 'acompanhamento', 'sobremesa', 'Combo') NOT NULL,
+    Categoria ENUM('burgers', 'bebida', 'acompanhamento', 'sobremesa', 'combo') NOT NULL,
     imagem VARCHAR(500),
     disponivel BOOLEAN DEFAULT TRUE,
     destaque BOOLEAN DEFAULT FALSE

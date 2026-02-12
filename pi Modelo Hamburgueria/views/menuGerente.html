@@ -63,9 +63,32 @@
     <div class="painel">
         <h1>Área do Admin</h1>
         
-        <button class="botao" onclick="window.location.href = 'gerenciarCardapio.html'">Gerenciar Cardápio</button>
-        <button class="botao btn-financeiro" onclick="window.location.href = 'financeiro.html'">Financeiro</button>
-        <button class="botao btn-pedidos" onclick="window.location.href = 'dashboardPedidos.html'">Dashboard de Pedidos</button>
+        <button class="botao" onclick="window.location.href = '/gerenciar'">Gerenciar Cardápio</button>
+        <button class="botao btn-financeiro" onclick="window.location.href = '/financeiro'">Financeiro</button>
+        <button class="botao btn-pedidos" onclick="window.location.href = '/dashboard'">Dashboard de Pedidos</button>
+        <button class="botao btn-danger" onclick="fazerLogout()" style="background-color: #d32f2f; margin-top: 30px;">Logout</button>
     </div>
+
+    <script>
+        async function fazerLogout() {
+            if (confirm('Tem certeza que deseja fazer logout?')) {
+                try {
+                    const response = await fetch(`${window.location.origin}/logout`, {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+
+                    if (response.ok) {
+                        window.location.href = `${window.location.origin}/login`;
+                    } else {
+                        alert('Erro ao fazer logout');
+                    }
+                } catch (error) {
+                    console.error('Erro ao fazer logout:', error);
+                    alert('Erro ao fazer logout');
+                }
+            }
+        }
+    </script>
 </body>
 </html>

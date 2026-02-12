@@ -436,33 +436,40 @@
             const dados = {
                 email: document.getElementById("emailLogin").value,
                 senha: document.getElementById("senhaLogin").value
-
             }
 
             try {
-                const res = await fetch("http://localhost:3000/login", {
+                const res = await fetch(`${window.location.origin}/login`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(dados)
+                    body: JSON.stringify(dados),
+                    credentials: 'include' // Incluir cookies na requisição
                 });
 
                 const resposta = await res.json();
 
-                // Arrumar isso aqui e colocar JWT e colcoar apra os 3 tipos de logins
-                if (res.ok) {
-                    alert("Login realizado com sucesso!");
+                if (!res.ok) {
+                    alert(resposta.mensagem || "Erro ao fazer login");
+                    return;
+                }
 
-                    localStorage.setItem("nomeUsuario", resposta.usuario.Nome);
+                // ✅ JWT será armazenado automaticamente em cookie HttpOnly
+                // Não é necessário salvar no localStorage!
 
-                    window.location.href = "cardapioLogado.html";
-
-                } else {
-                    alert(resposta.mensagem);
+                // Redirecionar conforme o tipo do usuário
+                if (resposta.tipo === "cliente") {
+                    window.location.href = "/cardapio";
+                } 
+                else if (resposta.tipo === "funcionario") {
+                    window.location.href = "/dashboard";
+                } 
+                else if (resposta.tipo === "gerente") {
+                    window.location.href = "/menugerente";
                 }
 
             } catch (error) {
                 console.error("Erro na requisição:", error);
-                alert("Erro ao conectar ao servidor.");
+                alert("Erro ao conectar ao servidor. Tente novamente.");
             }
         });
 
@@ -480,23 +487,28 @@
             };
 
             try {
-                const res = await fetch("http://localhost:3000/cadastro", {
+                const res = await fetch(`${window.location.origin}/cadastro`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(dados)
+                    body: JSON.stringify(dados),
+                    credentials: 'include' // Incluir cookies
                 });
 
                 const resposta = await res.json();
 
                 if (res.ok) {
-                    alert("Cadastro realizado com sucesso!");
+                    alert("Cadastro realizado com sucesso! Faça login para continuar.");
+                    // Limpar formulário
+                    document.getElementById("formCadastro").reset();
+                    // Voltar para o formulário de login
+                    document.getElementById("btnLoginTab").click();
                 } else {
-                    alert(resposta.mensagem);
+                    alert(resposta.mensagem || "Erro ao cadastrar");
                 }
 
             } catch (error) {
                 console.error("Erro na requisição:", error);
-                alert("Erro ao conectar ao servidor.");
+                alert("Erro ao conectar ao servidor. Tente novamente.");
             }
         });
     </script>

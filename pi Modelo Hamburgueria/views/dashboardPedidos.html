@@ -106,6 +106,9 @@
             <span class="navbar-text text-muted me-3 d-none d-md-block">
                 Dados atualizados em: <span id="lastUpdated" class="fw-semibold"></span>
             </span>
+            <button class="btn btn-outline-danger ms-auto" onclick="fazerLogout()" title="Sair da conta">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </button>
         </div>
     </nav>
 
@@ -289,7 +292,7 @@
                 applyTableFilters();
             }
 
-        const DETAILS_API_URL = 'http://localhost:3000/pedidos/'; // URL base
+        const DETAILS_API_URL = `${window.location.origin}/api/pedidos/`; // URL base dinâmica
         const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
 
         function getStatusModalHtml(status) {
@@ -324,7 +327,9 @@
             itensEl.innerHTML = '<li class="list-group-item">Buscando itens...</li>';
             
             try {
-                const response = await fetch(url);
+                const response = await fetch(url, {
+                    credentials: 'include' // Enviar cookie JWT
+                });
 
                 if (!response.ok) {
                     throw new Error(`Falha: HTTP ${response.status}`);
@@ -388,7 +393,7 @@
         }
 
 
-        const PEDIDOS_API_URL = 'http://localhost:3000/pedidos/listar';
+        const PEDIDOS_API_URL = `${window.location.origin}/api/pedidos/listar`;
         const TABLE_BODY_ID = 'pedidos-table-body';
 
         function getStatusBadgeHtml(status) {
@@ -420,7 +425,9 @@
             tbody.innerHTML = '<tr><td colspan="7">Carregando pedidos...</td></tr>'; 
 
             try {
-                const response = await fetch(PEDIDOS_API_URL);
+                const response = await fetch(PEDIDOS_API_URL, {
+                    credentials: 'include' // Enviar cookie JWT
+                });
                 
                 if (!response.ok) {
                     throw new Error(`Falha na requisição: ${response.status}`);
@@ -490,7 +497,7 @@
         // Chamar a função para popular a tabela ao carregar a página
         document.addEventListener('DOMContentLoaded', carregarTabelaPedidos);
 
-        const BASE_API_URL = 'http://localhost:3000/api/pedidos/contagem';
+        const BASE_API_URL = `${window.location.origin}/api/pedidos/contagem`;
         async function atualizarKPI(status, elementId) {
             const elemento = document.getElementById(elementId);
             
@@ -500,27 +507,69 @@
             const url = `${BASE_API_URL}?status=${status}`;
 
             try {
-                const response = await fetch(url);
+                const response = await fetch(url, {
+                    credentials: 'include' // Enviar cookie JWT
+                });
+
+                if (response.status === 401) {
+                    // Sessão expirada ou não autenticado
+                    window.location.href = `${window.location.origin}/login`;
+                    return;
+                }
 
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
+                    // Log detalhado do corpo para depuração (ex.: 404 detalhes)
+                    let bodyText = '';
+                    try { bodyText = await response.text(); } catch (e) { bodyText = '<no body>'; }
+                    console.error('Falha ao obter contagem:', response.status, bodyText);
+                    if (elemento) elemento.textContent = 'Erro';
+                    return;
                 }
 
-                const data = await response.json();
-                const contagem = data?.contagem;
-
-                if (contagem === undefined) {
-                    throw new Error("Resposta do servidor com formato inválido.");
+                const json = await response.json();
+                // Suportar várias formas de resposta: {contagem}, {data: {contagem}}, {data: number}
+                let contagem = undefined;
+                if (typeof json.contagem !== 'undefined') contagem = json.contagem;
+                else if (json && typeof json.data !== 'undefined') {
+                    // data pode ser objeto ou valor
+                    if (typeof json.data === 'object' && json.data !== null) contagem = json.data.contagem ?? json.data.total ?? undefined;
+                    else contagem = json.data;
                 }
-                
+
+                if (typeof contagem === 'undefined' || contagem === null || isNaN(Number(contagem))) {
+                    // fallback para zero
+                    contagem = 0;
+                }
+
                 // Atualiza o elemento no HTML com o novo valor
                 if (elemento) {
-                    elemento.textContent = contagem;
+                    elemento.textContent = String(contagem);
                 }
 
             } catch (error) {
                 if (elemento) {
                     elemento.textContent = 'Erro';
+                }
+            }
+        }
+
+        // Função de logout
+        async function fazerLogout() {
+            if (confirm('Tem certeza que deseja fazer logout?')) {
+                try {
+                    const response = await fetch(`${window.location.origin}/logout`, {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+
+                    if (response.ok) {
+                        window.location.href = `${window.location.origin}/login`;
+                    } else {
+                        alert('Erro ao fazer logout');
+                    }
+                } catch (error) {
+                    console.error('Erro ao fazer logout:', error);
+                    alert('Erro ao fazer logout');
                 }
             }
         }

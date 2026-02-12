@@ -580,9 +580,10 @@
 
         async function carregarCardapio() {
             try {
-                // 1. Consome a sua API do Back-end
-                const response = await fetch('http://localhost:3000/produtos');
-                const produtos = await response.json();
+                // 1. Consome a API pública de produtos
+                const response = await fetch(`${window.location.origin}/public/produtos`);
+                const result = await response.json();
+                const produtos = result.data || result;
 
                 const container = document.getElementById('menuContainer');
                 

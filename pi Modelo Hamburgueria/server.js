@@ -17,6 +17,7 @@ const verificarRole = require('./middlewares/verificarRole');
 
 // Importar serviços
 const { hashSenha, compararSenha } = require("./services/hashSenha");
+console.log('✓ Funções de hash carregadas:', typeof hashSenha, typeof compararSenha);
 
 // Inicializar Express
 const app = express();
@@ -100,8 +101,9 @@ app.post("/login", async (req, res) => {
 
             const funcionario = rows[0];
 
-            // Comparar senha (ajustar se usar bcrypt ou string simples)
-            if (senha !== funcionario.Senha) {
+            // Comparar senha com hash usando bcrypt
+            const isMatch = await compararSenha(senha, funcionario.Senha);
+            if (!isMatch) {
                 return res.status(401).json({ 
                     status: 'error',
                     mensagem: "Credenciais inválidas." 
@@ -131,7 +133,9 @@ app.post("/login", async (req, res) => {
 
             const gerente = rows[0];
 
-            if (senha !== gerente.Senha) {
+            // Comparar senha com hash usando bcrypt
+            const isMatch = await compararSenha(senha, gerente.Senha);
+            if (!isMatch) {
                 return res.status(401).json({ 
                     status: 'error',
                     mensagem: "Credenciais inválidas." 
@@ -321,12 +325,207 @@ app.get("/gerenciar", verificarJWT, verificarRole('gerente'), (req, res) => {
 });
 
 /**
+ * GET /gerenciar-funcionarios
+ * Rota protegida apenas para gerentes
+ * Retorna a página gerenciarFuncionarios.html
+ */
+app.get("/gerenciar-funcionarios", verificarJWT, verificarRole('gerente'), (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "gerenciarFuncionarios.html"));
+});
+
+/**
  * GET /cardapio
  * Rota protegida apenas para clientes
  * Retorna a página cardapioLogado.html
  */
 app.get("/cardapio", verificarJWT, verificarRole('cliente'), (req, res) => {
     res.sendFile(path.join(__dirname, "views", "cardapioLogado.html"));
+});
+
+// ============================================
+// ROTAS DE API PARA FUNCIONÁRIOS
+// ============================================
+
+/**
+ * GET /api/funcionarios
+ * Lista todos os funcionários (apenas gerentes)
+ * Requer autenticação JWT e role 'gerente'
+ */
+app.get('/api/funcionarios', verificarJWT, verificarRole('gerente'), async (req, res) => {
+    try {
+        const [funcionarios] = await db.execute('SELECT id, Nome, CPF, email, Telefone, Cargo FROM Funcionarios ORDER BY Nome');
+        res.status(200).json({
+            status: 'success',
+            data: funcionarios
+        });
+    } catch (error) {
+        console.error('Erro ao listar funcionários:', error);
+        res.status(500).json({
+            status: 'error',
+            mensagem: 'Erro ao buscar funcionários'
+        });
+    }
+});
+
+/**
+ * GET /api/funcionarios/:id
+ * Retorna um funcionário específico (apenas gerentes)
+ * Requer autenticação JWT e role 'gerente'
+ */
+app.get('/api/funcionarios/:id', verificarJWT, verificarRole('gerente'), async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [funcionarios] = await db.execute('SELECT id, Nome, CPF, email, Telefone, Cargo FROM Funcionarios WHERE id = ?', [id]);
+        if (funcionarios.length === 0) {
+            return res.status(404).json({
+                status: 'error',
+                mensagem: 'Funcionário não encontrado'
+            });
+        }
+        res.status(200).json({
+            status: 'success',
+            data: funcionarios[0]
+        });
+    } catch (error) {
+        console.error('Erro ao buscar funcionário:', error);
+        res.status(500).json({
+            status: 'error',
+            mensagem: 'Erro ao buscar funcionário'
+        });
+    }
+});
+
+/**
+ * POST /api/funcionarios
+ * Cria novo funcionário (apenas gerentes)
+ * Requer autenticação JWT e role 'gerente'
+ */
+app.post('/api/funcionarios', verificarJWT, verificarRole('gerente'), async (req, res) => {
+    console.log('=== POST /api/funcionarios recebido ===');
+    const { Nome, CPF, email, Telefone, Cargo, Senha } = req.body;
+    console.log('Dados recebidos:', { Nome, CPF, email, Cargo, Senha: Senha ? '***' : 'vazio' });
+
+    if (!Nome || !CPF || !email || !Cargo || !Senha) {
+        return res.status(400).json({
+            status: 'error',
+            mensagem: 'Nome, CPF, email, cargo e senha são obrigatórios'
+        });
+    }
+
+    try {
+        // Fazer hash da senha usando bcrypt
+        console.log('Iniciando hash da senha para funcionário:', Nome);
+        const senhaComHash = await hashSenha(Senha);
+        console.log('Hash criado com sucesso. Hash length:', senhaComHash.length);
+        
+        const [resultado] = await db.execute(
+            'INSERT INTO Funcionarios (Nome, CPF, email, Telefone, Cargo, Senha) VALUES (?, ?, ?, ?, ?, ?)',
+            [Nome, CPF, email, Telefone || null, Cargo, senhaComHash]
+        );
+        console.log('Funcionário inserido com ID:', resultado.insertId);
+        res.status(201).json({
+            status: 'success',
+            mensagem: 'Funcionário adicionado com sucesso!',
+            id: resultado.insertId
+        });
+    } catch (error) {
+        console.error('=== ERRO AO CRIAR FUNCIONÁRIO ===');
+        console.error('Erro:', error.message);
+        console.error('Stack:', error.stack);
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({
+                status: 'error',
+                mensagem: 'Este email ou CPF já está registrado'
+            });
+        }
+        res.status(500).json({
+            status: 'error',
+            mensagem: 'Erro ao criar funcionário'
+        });
+    }
+});
+
+/**
+ * PUT /api/funcionarios/:id
+ * Atualiza um funcionário (apenas gerentes)
+ * Requer autenticação JWT e role 'gerente'
+ */
+app.put('/api/funcionarios/:id', verificarJWT, verificarRole('gerente'), async (req, res) => {
+    const { id } = req.params;
+    const { Nome, CPF, email, Telefone, Cargo, Senha } = req.body;
+
+    if (!Nome || !CPF || !email || !Cargo) {
+        return res.status(400).json({
+            status: 'error',
+            mensagem: 'Nome, CPF, email e cargo são obrigatórios'
+        });
+    }
+
+    try {
+        let query = 'UPDATE Funcionarios SET Nome = ?, CPF = ?, email = ?, Telefone = ?, Cargo = ?';
+        let params = [Nome, CPF, email, Telefone || null, Cargo];
+
+        if (Senha) {
+            // Fazer hash da senha usando bcrypt
+            const senhaComHash = await hashSenha(Senha);
+            query += ', Senha = ?';
+            params.push(senhaComHash);
+        }
+
+        query += ' WHERE id = ?';
+        params.push(id);
+
+        const [resultado] = await db.execute(query, params);
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({
+                status: 'error',
+                mensagem: 'Funcionário não encontrado'
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            mensagem: 'Funcionário atualizado com sucesso!'
+        });
+    } catch (error) {
+        console.error('Erro ao atualizar funcionário:', error);
+        res.status(500).json({
+            status: 'error',
+            mensagem: 'Erro ao atualizar funcionário'
+        });
+    }
+});
+
+/**
+ * DELETE /api/funcionarios/:id
+ * Deleta um funcionário (apenas gerentes)
+ * Requer autenticação JWT e role 'gerente'
+ */
+app.delete('/api/funcionarios/:id', verificarJWT, verificarRole('gerente'), async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [resultado] = await db.execute('DELETE FROM Funcionarios WHERE id = ?', [id]);
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({
+                status: 'error',
+                mensagem: 'Funcionário não encontrado'
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            mensagem: 'Funcionário deletado com sucesso!'
+        });
+    } catch (error) {
+        console.error('Erro ao deletar funcionário:', error);
+        res.status(500).json({
+            status: 'error',
+            mensagem: 'Erro ao deletar funcionário'
+        });
+    }
 });
 
 // ============================================

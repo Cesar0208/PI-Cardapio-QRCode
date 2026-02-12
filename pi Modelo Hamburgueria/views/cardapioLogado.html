@@ -703,7 +703,7 @@
         
         <div class="category-filters">
             <button class="filter-btn active" onclick="filterMenu('todos', this)">Todos</button>
-            <button class="filter-btn" onclick="filterMenu('burger', this)">Burgers</button>
+            <button class="filter-btn" onclick="filterMenu('burgers', this)">Burgers</button>
             <button class="filter-btn" onclick="filterMenu('acompanhamento', this)">Acompanhamentos</button>
             <button class="filter-btn" onclick="filterMenu('bebida', this)">Bebidas</button>
             <button class="filter-btn" onclick="filterMenu('sobremesa', this)">Sobremesas</button>
@@ -804,21 +804,7 @@
     <script>
         
         // Arrumar isso aqui e colocar JWT
-        const nomeCompleto = localStorage.getItem("nomeUsuario");
-        if (!nomeCompleto) {
-            // 1. O item não existe (usuário não logado)
-            alert("Faça seu login para poder acessar essa página.");
-            window.location.href = "login.html"; 
-        } else {
-            // 2. O item existe: dividimos o nome para pegar apenas o primeiro
-            const primeiroNome = nomeCompleto.split(" ")[0];
-            
-            // 3. Exibe a saudação
-            const elementoNome = document.getElementById("mostrarNomeUsuario");
-            if (elementoNome) {
-                elementoNome.innerText = "Bem-vindo(a), " + primeiroNome + "!";
-            }
-        }
+
 
          document.addEventListener("DOMContentLoaded", () => {
             carregarCardapio();

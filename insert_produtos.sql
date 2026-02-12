@@ -24,7 +24,7 @@ INSERT INTO Produtos (Nome, Descricao, Quantidade, Preco_Unitario, Categoria, im
 ('Petit Gateau', 'Petit gateau de chocolate com sorvete', 20, 16.00, 'sobremesa', '', TRUE, TRUE),
 ('Torta de Limão', 'Fatia de torta de limão cremosa', 15, 10.00, 'sobremesa', '', TRUE, FALSE),
 
-('Combo 1 - Classic', 'Classic Burger + Batata Grande + Refrigerante 350ml', 30, 38.90, 'Combo', '', TRUE, TRUE),
-('Combo 2 - X-Bacon', 'X-Bacon + Batata Grande + Refrigerante 350ml', 25, 42.90, 'Combo', '', TRUE, TRUE),
-('Combo 3 - X-Tudo', 'X-Tudo + Batata Grande + Refrigerante 350ml + Sobremesa', 20, 52.90, 'Combo', '', TRUE, TRUE),
-('Combo Família', '3 Hambúrgueres + 2 Batatas Grandes + 3 Refrigerantes', 15, 95.00, 'Combo', '', TRUE, TRUE);
+('Combo 1 - Classic', 'Classic Burger + Batata Grande + Refrigerante 350ml', 30, 38.90, 'combo', '', TRUE, TRUE),
+('Combo 2 - X-Bacon', 'X-Bacon + Batata Grande + Refrigerante 350ml', 25, 42.90, 'combo', '', TRUE, TRUE),
+('Combo 3 - X-Tudo', 'X-Tudo + Batata Grande + Refrigerante 350ml + Sobremesa', 20, 52.90, 'combo', '', TRUE, TRUE),
+('Combo Família', '3 Hambúrgueres + 2 Batatas Grandes + 3 Refrigerantes', 15, 95.00, 'combo', '', TRUE, TRUE);

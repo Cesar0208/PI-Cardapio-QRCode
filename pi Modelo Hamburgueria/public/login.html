@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Acesso ao Sistema - Hamburgueria</title>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -46,8 +47,10 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        
-        .logo:hover { color: #f1f5f9; }
+
+        .logo:hover {
+            color: #f1f5f9;
+        }
 
         /* Links da Navegação */
         .nav-link-custom {
@@ -58,11 +61,14 @@
             font-size: 0.95rem;
             transition: color 0.3s;
             position: relative;
-            padding: 10px 0; /* Área de toque maior no mobile */
-            display: block; /* Garante que fique em linha no mobile */
+            padding: 10px 0;
+            /* Área de toque maior no mobile */
+            display: block;
+            /* Garante que fique em linha no mobile */
         }
 
-        .nav-link-custom:hover, .nav-link-custom.active {
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
             color: #fff;
             font-weight: 600;
         }
@@ -90,7 +96,7 @@
             border: none;
             padding: 0;
         }
-        
+
         .navbar-toggler:focus {
             box-shadow: none;
             outline: none;
@@ -102,7 +108,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding-top: 80px; /* Compensação do header fixo */
+            padding-top: 80px;
+            /* Compensação do header fixo */
             padding-bottom: 40px;
         }
 
@@ -110,7 +117,7 @@
         .auth-container {
             background: var(--glass-bg);
             border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 450px;
             overflow: hidden;
@@ -126,7 +133,7 @@
             padding: 5px;
             margin-bottom: 2rem;
             position: relative;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .switch-btn {
@@ -142,7 +149,9 @@
             border-radius: 50px;
         }
 
-        .switch-btn.active { color: #fff; }
+        .switch-btn.active {
+            color: #fff;
+        }
 
         .slider {
             position: absolute;
@@ -160,7 +169,7 @@
         .forms-wrapper {
             position: relative;
             width: 100%;
-            min-height: 340px; 
+            min-height: 340px;
         }
 
         .form-section {
@@ -178,7 +187,7 @@
             opacity: 1;
             visibility: visible;
             transform: translateX(0);
-            position: relative; 
+            position: relative;
         }
 
         .form-control {
@@ -192,7 +201,9 @@
             border-color: var(--primary-color);
         }
 
-        .form-floating > label { padding-left: 15px; }
+        .form-floating>label {
+            padding-left: 15px;
+        }
 
         .btn-custom {
             background: var(--primary-color);
@@ -219,7 +230,7 @@
             text-align: center;
             margin-bottom: 1.5rem;
         }
-        
+
         .input-icon {
             position: absolute;
             right: 15px;
@@ -228,8 +239,10 @@
             color: #94a3b8;
             z-index: 5;
         }
-        
-        .position-relative { margin-bottom: 1rem; }
+
+        .position-relative {
+            margin-bottom: 1rem;
+        }
 
         /* --- Footer Styles --- */
         .site-footer {
@@ -242,6 +255,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <nav class="navbar navbar-expand-lg site-header fixed-top">
@@ -250,7 +264,8 @@
                 <i class="fas fa-hamburger me-2"></i>Cardápio
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="fas fa-bars text-white fs-3"></span>
             </button>
 
@@ -271,7 +286,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-5">
-                    
+
                     <div class="auth-container">
                         <div class="switch-controls">
                             <div class="slider" id="slider"></div>
@@ -280,13 +295,14 @@
                         </div>
 
                         <div class="forms-wrapper">
-                            
+
                             <div class="form-section active" id="loginForm">
                                 <h2>Bem-vindo de volta!</h2>
                                 <form id="formLogin">
                                     <div class="position-relative">
                                         <div class="form-floating mb-3">
-                                            <input type="email" class="form-control" id="emailLogin" placeholder="name@example.com" required>
+                                            <input type="email" class="form-control" id="emailLogin"
+                                                placeholder="name@example.com" required>
                                             <label for="emailLogin">E-mail</label>
                                         </div>
                                         <i class="fas fa-envelope input-icon"></i>
@@ -294,7 +310,8 @@
 
                                     <div class="position-relative">
                                         <div class="form-floating mb-3">
-                                            <input type="password" class="form-control" id="senhaLogin" placeholder="Senha" required>
+                                            <input type="password" class="form-control" id="senhaLogin"
+                                                placeholder="Senha" required>
                                             <label for="senhaLogin">Senha</label>
                                         </div>
                                         <i class="fas fa-lock input-icon"></i>
@@ -303,9 +320,11 @@
                                     <div class="d-flex justify-content-between mb-3">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="rememberMe">
-                                            <label class="form-check-label text-muted small" for="rememberMe">Lembrar de mim</label>
+                                            <label class="form-check-label text-muted small" for="rememberMe">Lembrar de
+                                                mim</label>
                                         </div>
-                                        <a href="#" class="text-decoration-none small text-primary">Esqueceu a senha?</a>
+                                        <a href="#" class="text-decoration-none small text-primary">Esqueceu a
+                                            senha?</a>
                                     </div>
 
                                     <button type="submit" class="btn btn-custom">
@@ -319,7 +338,8 @@
                                 <form id="formCadastro">
                                     <div class="position-relative">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="nomeCadastro" placeholder="Nome" required>
+                                            <input type="text" class="form-control" id="nomeCadastro" placeholder="Nome"
+                                                required>
                                             <label for="nomeCadastro">Nome completo</label>
                                         </div>
                                         <i class="fas fa-user input-icon"></i>
@@ -327,7 +347,8 @@
 
                                     <div class="position-relative">
                                         <div class="form-floating mb-3">
-                                            <input type="email" class="form-control" id="emailCadastro" placeholder="E-mail" required>
+                                            <input type="email" class="form-control" id="emailCadastro"
+                                                placeholder="E-mail" required>
                                             <label for="emailCadastro">E-mail</label>
                                         </div>
                                         <i class="fas fa-envelope input-icon"></i>
@@ -335,7 +356,8 @@
 
                                     <div class="position-relative">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="CPFCadastro" placeholder="CPF" required>
+                                            <input type="text" class="form-control" id="CPFCadastro" placeholder="CPF"
+                                                required>
                                             <label for="CPFCadastro">CPF</label>
                                         </div>
                                         <i class="fas fa-user input-icon"></i>
@@ -343,7 +365,8 @@
 
                                     <div class="position-relative">
                                         <div class="form-floating mb-3">
-                                            <input type="tel" class="form-control" id="telefoneCadastro" placeholder="Telefone" required>
+                                            <input type="tel" class="form-control" id="telefoneCadastro"
+                                                placeholder="Telefone" required>
                                             <label for="telefoneCadastro">Telefone</label>
                                         </div>
                                         <i class="fas fa-phone input-icon"></i>
@@ -351,7 +374,8 @@
 
                                     <div class="position-relative">
                                         <div class="form-floating mb-3">
-                                            <input type="password" class="form-control" id="senhaCadastro" placeholder="Senha" required>
+                                            <input type="password" class="form-control" id="senhaCadastro"
+                                                placeholder="Senha" required>
                                             <label for="senhaCadastro">Senha</label>
                                         </div>
                                         <i class="fas fa-lock input-icon"></i>
@@ -359,7 +383,8 @@
 
                                     <div class="position-relative">
                                         <div class="form-floating mb-3">
-                                            <input type="password" class="form-control" id="confirmarSenha" placeholder="Confirmar" required>
+                                            <input type="password" class="form-control" id="confirmarSenha"
+                                                placeholder="Confirmar" required>
                                             <label for="confirmarSenha">Confirmar senha</label>
                                         </div>
                                         <i class="fas fa-check-circle input-icon"></i>
@@ -396,17 +421,17 @@
 
         btnLogin.addEventListener('click', () => {
             slider.style.transform = 'translateX(0)';
-            
+
             btnLogin.classList.add('active');
             btnCadastro.classList.remove('active');
 
             cadastroForm.classList.remove('active');
             setTimeout(() => {
-                cadastroForm.style.display = 'none'; 
-                loginForm.style.display = 'block';   
-                void loginForm.offsetWidth; 
+                cadastroForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                void loginForm.offsetWidth;
                 loginForm.classList.add('active');
-            }, 50); 
+            }, 50);
         });
 
         btnCadastro.addEventListener('click', () => {
@@ -416,15 +441,15 @@
             btnLogin.classList.remove('active');
 
             loginForm.classList.remove('active');
-            
+
             setTimeout(() => {
                 loginForm.style.display = 'none';
                 cadastroForm.style.display = 'block';
                 void cadastroForm.offsetWidth;
                 cadastroForm.classList.add('active');
-            }, 50); 
+            }, 50);
         });
-        
+
         window.addEventListener('DOMContentLoaded', () => {
             cadastroForm.style.display = 'none';
         });
@@ -456,13 +481,17 @@
                 // ✅ JWT será armazenado automaticamente em cookie HttpOnly
                 // Não é necessário salvar no localStorage!
 
+                // Salvar dados básicos no localStorage para exibição no frontend
+                localStorage.setItem("nomeUsuario", resposta.usuario.nome);
+                localStorage.setItem("usuarioID", resposta.usuario.id);
+
                 // Redirecionar conforme o tipo do usuário
                 if (resposta.tipo === "cliente") {
                     window.location.href = "/cardapio";
-                } 
+                }
                 else if (resposta.tipo === "funcionario") {
                     window.location.href = "/dashboard";
-                } 
+                }
                 else if (resposta.tipo === "gerente") {
                     window.location.href = "/menugerente";
                 }
@@ -513,4 +542,5 @@
         });
     </script>
 </body>
+
 </html>

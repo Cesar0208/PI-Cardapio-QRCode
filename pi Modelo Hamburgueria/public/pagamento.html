@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -49,7 +50,7 @@
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .section-title {
@@ -128,13 +129,15 @@
             margin-bottom: 8px;
         }
 
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             border-radius: 10px;
             border: 1px solid #e2e8f0;
             padding: 12px;
         }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: var(--secondary-color);
             box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.1);
         }
@@ -282,10 +285,11 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg site-header fixed-top">
         <div class="container">
-            <a class="navbar-brand logo" href="cardapioLogado.html">
+            <a class="navbar-brand logo" href="/cardapio">
                 <i class="fas fa-hamburger me-2"></i>BurguerPI
             </a>
         </div>
@@ -293,7 +297,7 @@
 
     <div class="checkout-container">
         <div class="mb-4">
-            <a href="cardapioLogado.html" class="btn-back">
+            <a href="/cardapio" class="btn-back">
                 <i class="fas fa-arrow-left"></i> Voltar ao Cardápio
             </a>
         </div>
@@ -350,7 +354,8 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Complemento</label>
-                                    <input type="text" class="form-control" id="complemento" placeholder="Apto, Bloco...">
+                                    <input type="text" class="form-control" id="complemento"
+                                        placeholder="Apto, Bloco...">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Bairro</label>
@@ -497,7 +502,7 @@
             document.querySelectorAll('.delivery-option').forEach(el => {
                 el.classList.remove('selected');
             });
-            
+
             const radio = document.getElementById(type);
             radio.checked = true;
             radio.closest('.delivery-option').classList.add('selected');
@@ -530,7 +535,7 @@
             document.querySelectorAll('.payment-method').forEach(el => {
                 el.classList.remove('selected');
             });
-            
+
             const radio = document.getElementById(method);
             radio.checked = true;
             radio.closest('.payment-method').classList.add('selected');
@@ -543,7 +548,7 @@
             }
         }
 
-        function finalizarPedido() {
+        async function finalizarPedido() {
             const nomeUsuario = localStorage.getItem("nomeUsuario");
             if (!nomeUsuario) {
                 alert("Você precisa estar logado para finalizar o pedido.");
@@ -551,7 +556,13 @@
                 return;
             }
 
+            if (cart.length === 0) {
+                alert("Seu carrinho está vazio.");
+                return;
+            }
+
             const deliveryType = document.querySelector('input[name="deliveryType"]:checked').value;
+            let enderecoInfo = null;
 
             // Validar formulário apenas se for entrega
             if (deliveryType === 'delivery') {
@@ -560,6 +571,15 @@
                     deliveryForm.reportValidity();
                     return;
                 }
+
+                enderecoInfo = {
+                    endereco: document.getElementById('endereco').value,
+                    numero: document.getElementById('numero').value,
+                    bairro: document.getElementById('bairro').value,
+                    cidade: document.getElementById('cidade').value,
+                    cep: document.getElementById('cep').value,
+                    complemento: document.getElementById('complemento').value
+                };
             }
 
             const paymentMethod = document.querySelector('input[name="payment"]:checked');
@@ -570,18 +590,54 @@
 
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-            const deliveryText = deliveryType === 'delivery' ? 'Entrega em Casa' : 'Retirar na Loja';
-            const paymentText = {
-                'credit': 'Cartão de Crédito',
-                'debit': 'Cartão de Débito',
-                'pix': 'PIX',
-                'cash': 'Dinheiro'
-            }[paymentMethod.value];
+            const orderData = {
+                itens: cart,
+                total: total,
+                formaPagamento: paymentMethod.value,
+                tipoPedido: deliveryType,
+                enderecoInfo: enderecoInfo
+            };
 
-            alert(`Pedido Confirmado!\n\nCliente: ${nomeUsuario}\nTipo: ${deliveryText}\nTotal: R$ ${total.toFixed(2)}\nPagamento: ${paymentText}\n\n${deliveryType === 'pickup' ? 'Retire seu pedido na loja em 20-30 minutos!' : 'Seu pedido será entregue em breve!'}`);
+            const btnSubmit = document.querySelector('.btn-submit');
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processando...';
 
-            localStorage.removeItem('cart');
-            window.location.href = 'cardapioLogado.html';
+            try {
+                const response = await fetch('/api/pedidos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(orderData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    const deliveryText = deliveryType === 'delivery' ? 'Entrega em Casa' : 'Retirar na Loja';
+                    const paymentText = {
+                        'credit': 'Cartão de Crédito',
+                        'debit': 'Cartão de Débito',
+                        'pix': 'PIX',
+                        'cash': 'Dinheiro'
+                    }[paymentMethod.value];
+
+                    alert(`Pedido realizado com sucesso!\n\nID do Pedido: ${result.idPedido}\nTipo: ${deliveryText}\nTotal: R$ ${total.toFixed(2)}\n\n${deliveryType === 'pickup' ? 'Retire seu pedido na loja em 20-30 minutos!' : 'Seu pedido será entregue em breve!'}`);
+
+                    localStorage.removeItem('cart');
+                    window.location.href = 'cardapioLogado.html';
+                } else {
+                    alert('Erro ao realizar pedido: ' + result.mensagem);
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = '<i class="fas fa-check-circle me-2"></i>Finalizar Pedido';
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                alert('Erro de conexão ao servidor. Tente novamente mais tarde.');
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<i class="fas fa-check-circle me-2"></i>Finalizar Pedido';
+            }
         }
 
         // Inicializar
@@ -591,4 +647,5 @@
         });
     </script>
 </body>
+
 </html>

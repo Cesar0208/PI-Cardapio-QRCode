@@ -5,7 +5,7 @@ const connection = mysql.createPool({
     user: "root",
     password: "senac",
     database: "pi_cardapio",
-    port: 3307
+    port: 3306
 });
 
 connection.getConnection()

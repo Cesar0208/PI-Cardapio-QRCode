@@ -41,6 +41,13 @@ CREATE TABLE Pedidos (
     Status ENUM('novo', 'preparo', 'enviado', 'entregue', 'cancelado') DEFAULT 'novo',
     Valor DECIMAL(10, 2) NOT NULL,
     Horario_Pedido DATETIME NOT NULL,
+    Tipo_Pedido ENUM('delivery', 'pickup') NOT NULL DEFAULT 'delivery',
+    Endereco VARCHAR(255),
+    Numero VARCHAR(20),
+    Bairro VARCHAR(100),
+    Cidade VARCHAR(100),
+    CEP VARCHAR(20),
+    Complemento VARCHAR(255),
     
     FOREIGN KEY (ID_Cliente) REFERENCES Clientes(ID),
     FOREIGN KEY (ID_Funcionario) REFERENCES Funcionarios(ID)

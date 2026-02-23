@@ -75,9 +75,9 @@ app.post("/login", async (req, res) => {
 
     // Validar campos obrigatórios
     if (!email || !senha) {
-        return res.status(400).json({ 
+        return res.status(400).json({
             status: 'error',
-            mensagem: "Email e senha são obrigatórios." 
+            mensagem: "Email e senha são obrigatórios."
         });
     }
 
@@ -93,9 +93,9 @@ app.post("/login", async (req, res) => {
             );
 
             if (rows.length === 0) {
-                return res.status(401).json({ 
+                return res.status(401).json({
                     status: 'error',
-                    mensagem: "Credenciais inválidas." 
+                    mensagem: "Credenciais inválidas."
                 });
             }
 
@@ -104,14 +104,14 @@ app.post("/login", async (req, res) => {
             // Comparar senha com hash usando bcrypt
             const isMatch = await compararSenha(senha, funcionario.Senha);
             if (!isMatch) {
-                return res.status(401).json({ 
+                return res.status(401).json({
                     status: 'error',
-                    mensagem: "Credenciais inválidas." 
+                    mensagem: "Credenciais inválidas."
                 });
             }
 
             usuario = {
-                id: funcionario.id,
+                id: funcionario.ID || funcionario.id,
                 nome: funcionario.Nome
             };
             tipo = "funcionario";
@@ -125,9 +125,9 @@ app.post("/login", async (req, res) => {
             );
 
             if (rows.length === 0) {
-                return res.status(401).json({ 
+                return res.status(401).json({
                     status: 'error',
-                    mensagem: "Credenciais inválidas." 
+                    mensagem: "Credenciais inválidas."
                 });
             }
 
@@ -136,14 +136,14 @@ app.post("/login", async (req, res) => {
             // Comparar senha com hash usando bcrypt
             const isMatch = await compararSenha(senha, gerente.Senha);
             if (!isMatch) {
-                return res.status(401).json({ 
+                return res.status(401).json({
                     status: 'error',
-                    mensagem: "Credenciais inválidas." 
+                    mensagem: "Credenciais inválidas."
                 });
             }
 
             usuario = {
-                id: gerente.id,
+                id: gerente.ID || gerente.id,
                 nome: gerente.Nome
             };
             tipo = "gerente";
@@ -157,9 +157,9 @@ app.post("/login", async (req, res) => {
             );
 
             if (rows.length === 0) {
-                return res.status(401).json({ 
+                return res.status(401).json({
                     status: 'error',
-                    mensagem: "Credenciais inválidas." 
+                    mensagem: "Credenciais inválidas."
                 });
             }
 
@@ -168,14 +168,14 @@ app.post("/login", async (req, res) => {
             // Usar bcrypt para comparar senha (já está implementado)
             const isMatch = await compararSenha(senha, cliente.Senha);
             if (!isMatch) {
-                return res.status(401).json({ 
+                return res.status(401).json({
                     status: 'error',
-                    mensagem: "Credenciais inválidas." 
+                    mensagem: "Credenciais inválidas."
                 });
             }
 
             usuario = {
-                id: cliente.id,
+                id: cliente.ID || cliente.id,
                 nome: cliente.Nome
             };
             tipo = "cliente";
@@ -214,9 +214,9 @@ app.post("/login", async (req, res) => {
 
     } catch (error) {
         console.error("Erro ao fazer login:", error);
-        return res.status(500).json({ 
+        return res.status(500).json({
             status: 'error',
-            mensagem: "Erro interno no servidor." 
+            mensagem: "Erro interno no servidor."
         });
     }
 });
@@ -277,7 +277,7 @@ app.post("/cadastro", async (req, res) => {
 
     } catch (error) {
         console.error("Erro ao cadastrar cliente:", error);
-        
+
         // Verificar se é erro de email duplicado
         if (error.code === 'ER_DUP_ENTRY') {
             return res.status(409).json({
@@ -417,7 +417,7 @@ app.post('/api/funcionarios', verificarJWT, verificarRole('gerente'), async (req
         console.log('Iniciando hash da senha para funcionário:', Nome);
         const senhaComHash = await hashSenha(Senha);
         console.log('Hash criado com sucesso. Hash length:', senhaComHash.length);
-        
+
         const [resultado] = await db.execute(
             'INSERT INTO Funcionarios (Nome, CPF, email, Telefone, Cargo, Senha) VALUES (?, ?, ?, ?, ?, ?)',
             [Nome, CPF, email, Telefone || null, Cargo, senhaComHash]
@@ -547,9 +547,9 @@ app.get("/api/produtos", verificarJWT, async (req, res) => {
         });
     } catch (error) {
         console.error("Erro ao buscar produtos:", error);
-        res.status(500).json({ 
+        res.status(500).json({
             status: 'error',
-            mensagem: "Erro ao buscar produtos do cardápio" 
+            mensagem: "Erro ao buscar produtos do cardápio"
         });
     }
 });
@@ -584,9 +584,9 @@ app.get("/api/produtos/:id", verificarJWT, async (req, res) => {
     try {
         const [produtos] = await db.execute("SELECT * FROM Produtos WHERE ID = ?", [id]);
         if (produtos.length === 0) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 status: 'error',
-                mensagem: "Produto não encontrado" 
+                mensagem: "Produto não encontrado"
             });
         }
         res.status(200).json({
@@ -595,9 +595,9 @@ app.get("/api/produtos/:id", verificarJWT, async (req, res) => {
         });
     } catch (error) {
         console.error("Erro ao buscar produto:", error);
-        res.status(500).json({ 
+        res.status(500).json({
             status: 'error',
-            mensagem: "Erro ao buscar produto" 
+            mensagem: "Erro ao buscar produto"
         });
     }
 });
@@ -611,9 +611,9 @@ app.post("/api/produtos", verificarJWT, verificarRole('gerente'), async (req, re
     const { nome, categoria, preco, descricao, imagem, disponivel, destaque, quantidade } = req.body;
 
     if (!nome || !categoria || !preco) {
-        return res.status(400).json({ 
+        return res.status(400).json({
             status: 'error',
-            mensagem: "Nome, categoria e preço são obrigatórios" 
+            mensagem: "Nome, categoria e preço são obrigatórios"
         });
     }
 
@@ -622,16 +622,16 @@ app.post("/api/produtos", verificarJWT, verificarRole('gerente'), async (req, re
             "INSERT INTO Produtos (Nome, Categoria, Preco_Unitario, Descricao, imagem, disponivel, destaque, Quantidade) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             [nome, categoria, preco, descricao || null, imagem || null, disponivel !== false, destaque || false, quantidade || 0]
         );
-        res.status(201).json({ 
+        res.status(201).json({
             status: 'success',
-            mensagem: "Produto adicionado com sucesso!", 
-            id: resultado.insertId 
+            mensagem: "Produto adicionado com sucesso!",
+            id: resultado.insertId
         });
     } catch (error) {
         console.error("Erro ao adicionar produto:", error);
-        res.status(500).json({ 
+        res.status(500).json({
             status: 'error',
-            mensagem: "Erro ao adicionar produto ao cardápio" 
+            mensagem: "Erro ao adicionar produto ao cardápio"
         });
     }
 });
@@ -646,9 +646,9 @@ app.put("/api/produtos/:id", verificarJWT, verificarRole('gerente'), async (req,
     const { nome, categoria, preco, descricao, imagem, disponivel, destaque, quantidade } = req.body;
 
     if (!nome || !categoria || !preco) {
-        return res.status(400).json({ 
+        return res.status(400).json({
             status: 'error',
-            mensagem: "Nome, categoria e preço são obrigatórios" 
+            mensagem: "Nome, categoria e preço são obrigatórios"
         });
     }
 
@@ -659,21 +659,21 @@ app.put("/api/produtos/:id", verificarJWT, verificarRole('gerente'), async (req,
         );
 
         if (resultado.affectedRows === 0) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 status: 'error',
-                mensagem: "Produto não encontrado" 
+                mensagem: "Produto não encontrado"
             });
         }
 
-        res.status(200).json({ 
+        res.status(200).json({
             status: 'success',
-            mensagem: "Produto atualizado com sucesso!" 
+            mensagem: "Produto atualizado com sucesso!"
         });
     } catch (error) {
         console.error("Erro ao atualizar produto:", error);
-        res.status(500).json({ 
+        res.status(500).json({
             status: 'error',
-            mensagem: "Erro ao atualizar produto" 
+            mensagem: "Erro ao atualizar produto"
         });
     }
 });
@@ -690,21 +690,21 @@ app.delete("/api/produtos/:id", verificarJWT, verificarRole('gerente'), async (r
         const [resultado] = await db.execute("DELETE FROM Produtos WHERE ID = ?", [id]);
 
         if (resultado.affectedRows === 0) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 status: 'error',
-                mensagem: "Produto não encontrado" 
+                mensagem: "Produto não encontrado"
             });
         }
 
-        res.status(200).json({ 
+        res.status(200).json({
             status: 'success',
-            mensagem: "Produto excluído com sucesso!" 
+            mensagem: "Produto excluído com sucesso!"
         });
     } catch (error) {
         console.error("Erro ao excluir produto:", error);
-        res.status(500).json({ 
+        res.status(500).json({
             status: 'error',
-            mensagem: "Erro ao excluir produto" 
+            mensagem: "Erro ao excluir produto"
         });
     }
 });
@@ -725,21 +725,21 @@ app.patch("/api/produtos/:id/disponibilidade", verificarJWT, verificarRole('gere
         );
 
         if (resultado.affectedRows === 0) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 status: 'error',
-                mensagem: "Produto não encontrado" 
+                mensagem: "Produto não encontrado"
             });
         }
 
-        res.status(200).json({ 
+        res.status(200).json({
             status: 'success',
-            mensagem: "Disponibilidade atualizada com sucesso!" 
+            mensagem: "Disponibilidade atualizada com sucesso!"
         });
     } catch (error) {
         console.error("Erro ao atualizar disponibilidade:", error);
-        res.status(500).json({ 
+        res.status(500).json({
             status: 'error',
-            mensagem: "Erro ao atualizar disponibilidade" 
+            mensagem: "Erro ao atualizar disponibilidade"
         });
     }
 });
@@ -762,6 +762,7 @@ app.get("/api/pedidos/listar", verificarJWT, verificarRole(['funcionario', 'gere
             p.Valor,
             p.Forma_Pagamento,
             p.Status,
+            p.Tipo_Pedido,
             c.Nome AS ClienteNome,
             c.CPF AS ClienteCPF,
             GROUP_CONCAT(
@@ -774,13 +775,13 @@ app.get("/api/pedidos/listar", verificarJWT, verificarRole(['funcionario', 'gere
         JOIN Itens_Pedidos ip ON p.ID = ip.ID_Pedido
         JOIN Produtos pr ON ip.ID_Produto = pr.ID
         WHERE p.Status IN ('novo', 'preparo', 'enviado', 'entregue')
-        GROUP BY p.ID, p.Horario_Pedido, p.Valor, p.Forma_Pagamento, p.Status, c.Nome, c.CPF
+        GROUP BY p.ID, p.Horario_Pedido, p.Valor, p.Forma_Pagamento, p.Status, p.Tipo_Pedido, c.Nome, c.CPF
         ORDER BY p.Horario_Pedido ASC;
     `;
 
     try {
-        const [pedidos] = await db.execute(sqlQuery); 
-        
+        const [pedidos] = await db.execute(sqlQuery);
+
         res.status(200).json({
             status: 'success',
             data: pedidos
@@ -792,6 +793,92 @@ app.get("/api/pedidos/listar", verificarJWT, verificarRole(['funcionario', 'gere
             status: 'error',
             message: 'Erro interno do servidor ao buscar a lista de pedidos.'
         });
+    }
+});
+
+/**
+ * POST /api/pedidos
+ * Cria um novo pedido no banco de dados
+ * Requer autenticação JWT (tipo 'cliente')
+ */
+app.post("/api/pedidos", verificarJWT, verificarRole('cliente'), async (req, res) => {
+    const {
+        itens,
+        total,
+        formaPagamento,
+        tipoPedido,
+        enderecoInfo
+    } = req.body;
+
+    const idCliente = req.usuario.id || req.usuario.ID;
+
+    if (!idCliente) {
+        return res.status(401).json({
+            status: 'error',
+            mensagem: 'Sessão inválida ou expirada. Por favor, saia e faça login novamente.'
+        });
+    }
+
+    if (!itens || !itens.length || !total || !formaPagamento || !tipoPedido) {
+        return res.status(400).json({
+            status: 'error',
+            mensagem: 'Dados do pedido incompletos.'
+        });
+    }
+
+    const connection = await db.getConnection();
+
+    try {
+        await connection.beginTransaction();
+
+        // 1. Inserir na tabela Pedidos
+        const [resultPedido] = await connection.execute(
+            `INSERT INTO Pedidos (
+                ID_Cliente, Forma_Pagamento, Status, Valor, Horario_Pedido, 
+                Tipo_Pedido, Endereco, Numero, Bairro, Cidade, CEP, Complemento
+            ) VALUES (?, ?, 'novo', ?, NOW(), ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                idCliente || null,
+                formaPagamento || null,
+                total || 0,
+                tipoPedido || 'delivery',
+                (tipoPedido === 'delivery' && enderecoInfo ? enderecoInfo.endereco : null) || null,
+                (tipoPedido === 'delivery' && enderecoInfo ? enderecoInfo.numero : null) || null,
+                (tipoPedido === 'delivery' && enderecoInfo ? enderecoInfo.bairro : null) || null,
+                (tipoPedido === 'delivery' && enderecoInfo ? enderecoInfo.cidade : null) || null,
+                (tipoPedido === 'delivery' && enderecoInfo ? enderecoInfo.cep : null) || null,
+                (tipoPedido === 'delivery' && enderecoInfo ? enderecoInfo.complemento : null) || null
+            ]
+        );
+
+        const idPedido = resultPedido.insertId;
+
+        // 2. Inserir itens na tabela Itens_Pedidos
+        for (const item of itens) {
+            await connection.execute(
+                `INSERT INTO Itens_Pedidos (ID_Pedido, ID_Produto, Quantidade, Preco_Venda)
+                 VALUES (?, ?, ?, ?)`,
+                [idPedido, item.id, item.quantity, item.price]
+            );
+        }
+
+        await connection.commit();
+
+        res.status(201).json({
+            status: 'success',
+            mensagem: 'Pedido realizado com sucesso!',
+            idPedido: idPedido
+        });
+
+    } catch (error) {
+        await connection.rollback();
+        console.error("Erro ao salvar pedido:", error);
+        res.status(500).json({
+            status: 'error',
+            mensagem: 'Erro ao processar o pedido. Tente novamente.'
+        });
+    } finally {
+        connection.release();
     }
 });
 
@@ -809,9 +896,9 @@ app.get('/api/pedidos/contagem', verificarJWT, verificarRole(['funcionario', 'ge
     const status = req.query.status;
 
     if (!status) {
-        return res.status(400).json({ 
-            status: 'error', 
-            message: 'O parâmetro "status" é obrigatório.' 
+        return res.status(400).json({
+            status: 'error',
+            message: 'O parâmetro "status" é obrigatório.'
         });
     }
 
@@ -821,14 +908,14 @@ app.get('/api/pedidos/contagem', verificarJWT, verificarRole(['funcionario', 'ge
         WHERE Status = ?
         ${status === 'entregue' ? 'AND DATE(Horario_Pedido) = CURDATE()' : ''};
     `;
-    
+
     const values = [status];
 
     try {
         const [rows] = await db.execute(sqlQuery, values);
-        
+
         const total = rows[0].total_contagem;
-        
+
         res.status(200).json({
             status: 'success',
             contagem: total
@@ -852,8 +939,12 @@ app.get("/api/pedidos/:id", verificarJWT, async (req, res) => {
             p.Valor,
             p.Status,
             p.Forma_Pagamento,
-            'Rua Exemplo, 123 - Bairro Teste' AS EnderecoEntrega, 
-            'Sem picles e maionese no acompanhamento' AS Observacoes,
+            p.Tipo_Pedido,
+            CASE 
+                WHEN p.Tipo_Pedido = 'pickup' THEN 'Retirada na Loja'
+                ELSE CONCAT(p.Endereco, ', ', p.Numero, ' - ', p.Bairro, ', ', p.Cidade, ' - CEP: ', p.CEP, IF(p.Complemento IS NOT NULL AND p.Complemento != '', CONCAT(' (', p.Complemento, ')'), ''))
+            END AS EnderecoEntrega,
+            'Sem picles e maionese no acompanhamento' AS Observacoes, 
             c.Nome AS ClienteNome,
             c.CPF AS ClienteCPF,
             f.Nome AS FuncionarioNome,
@@ -869,16 +960,16 @@ app.get("/api/pedidos/:id", verificarJWT, async (req, res) => {
         JOIN Produtos pr ON ip.ID_Produto = pr.ID
         WHERE p.ID = ?
         GROUP BY 
-            p.ID, p.Valor, p.Status, p.Forma_Pagamento, c.Nome, c.CPF, f.Nome;
+            p.ID, p.Valor, p.Status, p.Forma_Pagamento, p.Tipo_Pedido, p.Endereco, p.Numero, p.Bairro, p.Cidade, p.CEP, p.Complemento, c.Nome, c.CPF, f.Nome;
     `;
 
     try {
         const [rows] = await db.execute(sqlQuery, [id]);
-        
+
         if (rows.length === 0) {
-            return res.status(404).json({ 
-                status: 'error', 
-                message: 'Pedido não encontrado.' 
+            return res.status(404).json({
+                status: 'error',
+                message: 'Pedido não encontrado.'
             });
         }
 
@@ -889,9 +980,9 @@ app.get("/api/pedidos/:id", verificarJWT, async (req, res) => {
 
     } catch (err) {
         console.error(`Erro ao buscar detalhes do pedido ${id}:`, err);
-        res.status(500).json({ 
-            status: 'error', 
-            message: 'Erro interno do servidor.' 
+        res.status(500).json({
+            status: 'error',
+            message: 'Erro interno do servidor.'
         });
     }
 });

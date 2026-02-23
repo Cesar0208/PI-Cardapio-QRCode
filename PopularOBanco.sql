@@ -1,13 +1,18 @@
 -- Inserindo Funcionários (Atendentes e Gerentes)
 INSERT INTO Funcionarios (Nome, CPF, Telefone, Email, Cargo, Senha) VALUES 
-('Lucas Oliveira', '111.222.333-44', '(11) 98888-7777', 'lucas@funcionario.com', 'Atendente', 'hash_senha_123'),
-('Juliana Costa', '555.666.777-88', '(11) 97777-6666', 'juliana@gerente.com', 'Gerente', 'hash_senha_456');
+-- hash_senha_123
+('Lucas Oliveira', '111.222.333-44', '(11) 98888-7777', 'lucas@funcionario.com', 'Atendente', '$2b$10$l22R0Mgu8W9R0QvW4Grl2OM1lnS2E7Vlf27qOzzPcGp236ttLj8Sq'), 
+-- hash_senha_456
+('Juliana Costa', '555.666.777-88', '(11) 97777-6666', 'juliana@gerente.com', 'Gerente', '$2b$10$6X7OH82knOrGTumdZ1unweUbqiBR5BNbgRpUq1AYQnOxiVYa8vOeu');
 
 -- Inserindo Clientes
 INSERT INTO Clientes (Nome, CPF, Telefone, Email, Senha) VALUES 
-('Ricardo Souza', '123.456.789-00', '(11) 91234-5678', 'ricardo@email.com', 'cliente123'),
-('Beatriz Lima', '987.654.321-11', '(11) 92345-6789', 'beatriz@email.com', 'cliente456'),
-('Tiago Mendes', '456.789.123-22', '(11) 93456-7890', 'tiago@email.com', 'cliente789');
+-- cliente123
+('Ricardo Souza', '123.456.789-00', '(11) 91234-5678', 'ricardo@email.com', '$2b$10$WurmNlPvK4GdV7MYqGuwVeyw3VhMiyAU6aOtr9KBBYJ0FpXX6Sdky'),
+-- cliente456
+('Beatriz Lima', '987.654.321-11', '(11) 92345-6789', 'beatriz@email.com', '$2b$10$CCqNDUmD2wbsgAMQZIeM/ub/24f.oosFyJagffnYLWJXlP.l7eiSW'),
+-- cliente789
+('Tiago Mendes', '456.789.123-22', '(11) 93456-7890', 'tiago@email.com', '$2b$10$.QYN42d0EIF3gX3PJio3XuDM06jPRA2hsAgpMD777LwNzONX6gnce');
 
 -- PEDIDO 1: Ricardo comprou o Combo 1 (ID 21)
 INSERT INTO Pedidos (ID_Cliente, ID_Funcionario, Forma_Pagamento, Status, Valor, Horario_Pedido) 

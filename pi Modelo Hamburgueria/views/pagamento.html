@@ -306,7 +306,7 @@
             <i class="fas fa-shopping-cart"></i>
             <h3>Carrinho Vazio</h3>
             <p>Adicione itens ao carrinho antes de finalizar o pedido</p>
-            <a href="cardapioLogado.html" class="btn btn-primary mt-3">Ver Cardápio</a>
+            <a href="/cardapio" class="btn btn-primary mt-3">Ver Cardápio</a>
         </div>
 
         <div id="checkoutContent">
@@ -626,7 +626,7 @@
                     alert(`Pedido realizado com sucesso!\n\nID do Pedido: ${result.idPedido}\nTipo: ${deliveryText}\nTotal: R$ ${total.toFixed(2)}\n\n${deliveryType === 'pickup' ? 'Retire seu pedido na loja em 20-30 minutos!' : 'Seu pedido será entregue em breve!'}`);
 
                     localStorage.removeItem('cart');
-                    window.location.href = 'cardapioLogado.html';
+                    window.location.href = '/cardapio';
                 } else {
                     alert('Erro ao realizar pedido: ' + result.mensagem);
                     btnSubmit.disabled = false;

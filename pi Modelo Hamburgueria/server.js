@@ -342,6 +342,26 @@ app.get("/cardapio", verificarJWT, verificarRole('cliente'), (req, res) => {
     res.sendFile(path.join(__dirname, "views", "cardapioLogado.html"));
 });
 
+/**
+ * GET /pagamento
+ * Rota protegida apenas para clientes
+ * Retorna a página pagamento.html da pasta views
+ */
+app.get("/pagamento", verificarJWT, verificarRole('cliente'), (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "pagamento.html"));
+});
+
+/**
+ * GET /financeiro
+ * Rota protegida apenas para gerentes
+ * Retorna a página financeiro.html da pasta views
+ */
+app.get("/financeiro", verificarJWT, verificarRole('gerente'), (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "financeiro.html"));
+});
+
+
+
 // ============================================
 // ROTAS DE API PARA FUNCIONÁRIOS
 // ============================================

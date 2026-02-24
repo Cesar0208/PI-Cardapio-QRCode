@@ -11,6 +11,20 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 
+// garantir que a tabela Financeiro tenha coluna Categoria
+(async () => {
+    try {
+        await db.execute("ALTER TABLE Financeiro ADD COLUMN Categoria VARCHAR(255) NULL");
+        console.log('Coluna Categoria adicionada na tabela Financeiro.');
+    } catch (err) {
+        if (err.code === 'ER_DUP_FIELDNAME' || err.errno === 1060) {
+            // coluna já existe, nada a fazer
+        } else {
+            console.error('Erro ao garantir coluna Categoria:', err.message);
+        }
+    }
+})();
+
 // Importar middlewares de verificação
 const verificarJWT = require('./middlewares/verificarJWT');
 const verificarRole = require('./middlewares/verificarRole');
@@ -337,6 +351,7 @@ app.get("/financeiro", verificarJWT, verificarRole('gerente'), (req, res) => {
 app.get('/api/financeiro', verificarJWT, verificarRole('gerente'), async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT * FROM Financeiro ORDER BY Data DESC');
+        // renomear campo caso tabela antiga não tenha Categoria
         res.status(200).json({ status: 'success', data: rows });
     } catch (error) {
         console.error('Erro ao buscar dados financeiros:', error);
@@ -349,19 +364,30 @@ app.get('/api/financeiro', verificarJWT, verificarRole('gerente'), async (req, r
  * Adiciona um registro financeiro (apenas gerentes)
  */
 app.post('/api/financeiro', verificarJWT, verificarRole('gerente'), async (req, res) => {
-    const { ID_Pedido, Forma_Pagamento, Valor, Data } = req.body;
+    console.log('POST /api/financeiro body', req.body);
+    const { ID_Pedido, Forma_Pagamento, Categoria, Valor, Data } = req.body;
     if (Valor == null || !Data) {
         return res.status(400).json({ status: 'error', mensagem: 'Valor e data são obrigatórios' });
     }
+    const insertQuery = 'INSERT INTO Financeiro (ID_Pedido, Forma_Pagamento, Categoria, Valor, Data) VALUES (?, ?, ?, ?, ?)';
+    const params = [ID_Pedido || null, Forma_Pagamento || null, Categoria || null, Valor, Data];
+
     try {
-        const [result] = await db.execute(
-            'INSERT INTO Financeiro (ID_Pedido, Forma_Pagamento, Valor, Data) VALUES (?, ?, ?, ?)',
-            [ID_Pedido || null, Forma_Pagamento || null, Valor, Data]
-        );
-        res.status(201).json({ status: 'success', id: result.insertId });
+        const [result] = await db.execute(insertQuery, params);
+        return res.status(201).json({ status: 'success', id: result.insertId });
     } catch (error) {
+        // se coluna Categoria não existir, criar e tentar novamente
+        if (error.code === 'ER_BAD_FIELD_ERROR' && /Categoria/.test(error.message)) {
+            try {
+                await db.execute('ALTER TABLE Financeiro ADD COLUMN Categoria VARCHAR(255) NULL');
+                const [result] = await db.execute(insertQuery, params);
+                return res.status(201).json({ status: 'success', id: result.insertId });
+            } catch (err2) {
+                console.error('Erro ao criar coluna Categoria ou inserir novamente:', err2);
+            }
+        }
         console.error('Erro ao inserir financeiro:', error);
-        res.status(500).json({ status: 'error', mensagem: 'Erro ao inserir registro financeiro' });
+        return res.status(500).json({ status: 'error', mensagem: 'Erro ao inserir registro financeiro' });
     }
 });
 
@@ -897,6 +923,12 @@ app.post("/api/pedidos", verificarJWT, verificarRole('cliente'), async (req, res
                 [idPedido, item.id, item.quantity, item.price]
             );
         }
+
+        // 3. Inserir registro financeiro vinculando este pedido
+        await connection.execute(
+            'INSERT INTO Financeiro (ID_Pedido, Forma_Pagamento, Categoria, Valor, Data) VALUES (?, ?, ?, ?, NOW())',
+            [idPedido, formaPagamento || null, null, total || 0]
+        );
 
         await connection.commit();
 

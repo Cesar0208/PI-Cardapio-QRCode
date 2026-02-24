@@ -184,6 +184,10 @@
                             <label class="form-label">Descrição *</label>
                             <input type="text" class="form-control" id="trans-descricao" required>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Categoria</label>
+                            <input type="text" class="form-control" id="trans-categoria" placeholder="Ex: aluguel, vendas, etc.">
+                        </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Tipo *</label>
@@ -226,8 +230,8 @@
                 transacoes = body.data.map(item => ({
                     id: item.ID,
                     data: item.Data,
-                    descricao: item.Forma_Pagamento ? `Pedido #${item.ID_Pedido}` : '',
-                    categoria: item.Forma_Pagamento || '',
+                    descricao: item.Forma_Pagamento || '',                  // user text
+                    categoria: item.Categoria || (item.ID_Pedido ? `Pedido #${item.ID_Pedido}` : ''),
                     tipo: item.Valor >= 0 ? 'receita' : 'despesa',
                     valor: Math.abs(parseFloat(item.Valor))
                 }));
@@ -320,12 +324,14 @@
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const descricao = document.getElementById('trans-descricao').value;
+                const categoriaForm = document.getElementById('trans-categoria').value;
                 const tipo = document.getElementById('trans-tipo').value;
                 const valor = parseFloat(document.getElementById('trans-valor').value);
                 const data = new Date().toISOString().split('T')[0];
                 try {
                     const body = {
                         Forma_Pagamento: descricao,
+                        Categoria: categoriaForm || null,
                         Valor: tipo === 'receita' ? valor : -valor,
                         Data: data
                     };
@@ -342,7 +348,9 @@
                         modal.hide();
                         document.getElementById('form-transacao').reset();
                     } else {
-                        console.error('Erro ao adicionar', await resp.text());
+                        const t = await resp.text();
+                        console.error('Erro ao adicionar', t);
+                        alert('Falha ao adicionar transação: ' + t);
                     }
                 } catch (err) {
                     console.error('Erro ao enviar transação', err);

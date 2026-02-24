@@ -85,21 +85,14 @@ app.post("/login", async (req, res) => {
         let usuario = null;
         let tipo = null;
 
-        // ========= FUNCIONÁRIO =========
-        if (email.includes("@funcionario")) {
-            const [rows] = await db.execute(
-                "SELECT * FROM Funcionarios WHERE email = ?",
-                [email]
-            );
+        // Tentar encontrar o usuário na tabela de Funcionários primeiro
+        const [funcRows] = await db.execute(
+            "SELECT * FROM Funcionarios WHERE email = ?",
+            [email]
+        );
 
-            if (rows.length === 0) {
-                return res.status(401).json({
-                    status: 'error',
-                    mensagem: "Credenciais inválidas."
-                });
-            }
-
-            const funcionario = rows[0];
+        if (funcRows.length > 0) {
+            const funcionario = funcRows[0];
 
             // Comparar senha com hash usando bcrypt
             const isMatch = await compararSenha(senha, funcionario.Senha);
@@ -112,60 +105,33 @@ app.post("/login", async (req, res) => {
 
             usuario = {
                 id: funcionario.ID || funcionario.id,
-                nome: funcionario.Nome
+                nome: funcionario.Nome,
+                cargo: funcionario.Cargo
             };
-            tipo = "funcionario";
+
+            // Determinar o tipo (role) com base no cargo do banco de dados
+            // Se o cargo for 'Gerente', o tipo é 'gerente'. Caso contrário, 'funcionario'.
+            tipo = (funcionario.Cargo && funcionario.Cargo.toLowerCase() === 'gerente')
+                ? 'gerente'
+                : 'funcionario';
         }
-
-        // ========= GERENTE =========
-        else if (email.includes("@gerente")) {
-            const [rows] = await db.execute(
-                "SELECT * FROM Funcionarios WHERE email = ?",
-                [email]
-            );
-
-            if (rows.length === 0) {
-                return res.status(401).json({
-                    status: 'error',
-                    mensagem: "Credenciais inválidas."
-                });
-            }
-
-            const gerente = rows[0];
-
-            // Comparar senha com hash usando bcrypt
-            const isMatch = await compararSenha(senha, gerente.Senha);
-            if (!isMatch) {
-                return res.status(401).json({
-                    status: 'error',
-                    mensagem: "Credenciais inválidas."
-                });
-            }
-
-            usuario = {
-                id: gerente.ID || gerente.id,
-                nome: gerente.Nome
-            };
-            tipo = "gerente";
-        }
-
-        // ========= CLIENTE =========
         else {
-            const [rows] = await db.execute(
+            // Se não encontrou em Funcionários, procurar em Clientes
+            const [clientRows] = await db.execute(
                 "SELECT * FROM Clientes WHERE email = ?",
                 [email]
             );
 
-            if (rows.length === 0) {
+            if (clientRows.length === 0) {
                 return res.status(401).json({
                     status: 'error',
                     mensagem: "Credenciais inválidas."
                 });
             }
 
-            const cliente = rows[0];
+            const cliente = clientRows[0];
 
-            // Usar bcrypt para comparar senha (já está implementado)
+            // Usar bcrypt para comparar senha
             const isMatch = await compararSenha(senha, cliente.Senha);
             if (!isMatch) {
                 return res.status(401).json({
@@ -342,6 +308,26 @@ app.get("/cardapio", verificarJWT, verificarRole('cliente'), (req, res) => {
     res.sendFile(path.join(__dirname, "views", "cardapioLogado.html"));
 });
 
+/**
+ * GET /pagamento
+ * Rota protegida apenas para clientes
+ * Retorna a página pagamento.html da pasta views
+ */
+app.get("/pagamento", verificarJWT, verificarRole('cliente'), (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "pagamento.html"));
+});
+
+/**
+ * GET /financeiro
+ * Rota protegida apenas para gerentes
+ * Retorna a página financeiro.html da pasta views
+ */
+app.get("/financeiro", verificarJWT, verificarRole('gerente'), (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "financeiro.html"));
+});
+
+
+
 // ============================================
 // ROTAS DE API PARA FUNCIONÁRIOS
 // ============================================
@@ -401,9 +387,7 @@ app.get('/api/funcionarios/:id', verificarJWT, verificarRole('gerente'), async (
  * Requer autenticação JWT e role 'gerente'
  */
 app.post('/api/funcionarios', verificarJWT, verificarRole('gerente'), async (req, res) => {
-    console.log('=== POST /api/funcionarios recebido ===');
     const { Nome, CPF, email, Telefone, Cargo, Senha } = req.body;
-    console.log('Dados recebidos:', { Nome, CPF, email, Cargo, Senha: Senha ? '***' : 'vazio' });
 
     if (!Nome || !CPF || !email || !Cargo || !Senha) {
         return res.status(400).json({
@@ -414,15 +398,12 @@ app.post('/api/funcionarios', verificarJWT, verificarRole('gerente'), async (req
 
     try {
         // Fazer hash da senha usando bcrypt
-        console.log('Iniciando hash da senha para funcionário:', Nome);
         const senhaComHash = await hashSenha(Senha);
-        console.log('Hash criado com sucesso. Hash length:', senhaComHash.length);
 
         const [resultado] = await db.execute(
             'INSERT INTO Funcionarios (Nome, CPF, email, Telefone, Cargo, Senha) VALUES (?, ?, ?, ?, ?, ?)',
             [Nome, CPF, email, Telefone || null, Cargo, senhaComHash]
         );
-        console.log('Funcionário inserido com ID:', resultado.insertId);
         res.status(201).json({
             status: 'success',
             mensagem: 'Funcionário adicionado com sucesso!',

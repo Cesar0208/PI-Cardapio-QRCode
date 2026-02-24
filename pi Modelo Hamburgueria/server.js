@@ -774,7 +774,7 @@ app.get("/api/pedidos/listar", verificarJWT, verificarRole(['funcionario', 'gere
         JOIN Clientes c ON p.ID_Cliente = c.ID
         JOIN Itens_Pedidos ip ON p.ID = ip.ID_Pedido
         JOIN Produtos pr ON ip.ID_Produto = pr.ID
-        WHERE p.Status IN ('novo', 'preparo', 'enviado', 'entregue')
+        WHERE p.Status IN ('novo', 'preparo', 'enviado', 'entregue', 'cancelado')
         GROUP BY p.ID, p.Horario_Pedido, p.Valor, p.Forma_Pagamento, p.Status, p.Tipo_Pedido, c.Nome, c.CPF
         ORDER BY p.Horario_Pedido ASC;
     `;
@@ -926,6 +926,53 @@ app.get('/api/pedidos/contagem', verificarJWT, verificarRole(['funcionario', 'ge
         res.status(500).json({
             status: 'error',
             message: 'Erro interno do servidor.'
+        });
+    }
+});
+
+/**
+ * PATCH /api/pedidos/:id/status
+ * Atualiza o status de um pedido e vincula o funcionário que realizou a alteração
+ * Requer autenticação JWT e role de funcionario ou gerente
+ */
+app.patch("/api/pedidos/:id/status", verificarJWT, verificarRole(['funcionario', 'gerente']), async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    const idFuncionario = req.usuario.id || req.usuario.ID;
+
+    // Validar status permitido (baseado no ENUM do banco)
+    const statusPermitidos = ['novo', 'preparo', 'enviado', 'entregue', 'cancelado'];
+
+    if (!statusPermitidos.includes(status)) {
+        return res.status(400).json({
+            status: 'error',
+            mensagem: 'Status inválido.'
+        });
+    }
+
+    try {
+        const [resultado] = await db.execute(
+            "UPDATE Pedidos SET Status = ?, ID_Funcionario = ? WHERE ID = ?",
+            [status, idFuncionario, id]
+        );
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({
+                status: 'error',
+                mensagem: 'Pedido não encontrado.'
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            mensagem: `Status do pedido #${id} atualizado para ${status}.`
+        });
+
+    } catch (error) {
+        console.error(`Erro ao atualizar status do pedido ${id}:`, error);
+        res.status(500).json({
+            status: 'error',
+            mensagem: 'Erro interno ao atualizar status do pedido.'
         });
     }
 });

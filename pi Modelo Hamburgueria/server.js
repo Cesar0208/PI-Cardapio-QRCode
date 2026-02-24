@@ -326,7 +326,62 @@ app.get("/financeiro", verificarJWT, verificarRole('gerente'), (req, res) => {
     res.sendFile(path.join(__dirname, "views", "financeiro.html"));
 });
 
+// ============================================
+// ROTAS DE API PARA FINANCEIRO
+// ============================================
 
+/**
+ * GET /api/financeiro
+ * Retorna todos os registros financeiros (apenas gerentes)
+ */
+app.get('/api/financeiro', verificarJWT, verificarRole('gerente'), async (req, res) => {
+    try {
+        const [rows] = await db.execute('SELECT * FROM Financeiro ORDER BY Data DESC');
+        res.status(200).json({ status: 'success', data: rows });
+    } catch (error) {
+        console.error('Erro ao buscar dados financeiros:', error);
+        res.status(500).json({ status: 'error', mensagem: 'Erro ao buscar dados financeiros' });
+    }
+});
+
+/**
+ * POST /api/financeiro
+ * Adiciona um registro financeiro (apenas gerentes)
+ */
+app.post('/api/financeiro', verificarJWT, verificarRole('gerente'), async (req, res) => {
+    const { ID_Pedido, Forma_Pagamento, Valor, Data } = req.body;
+    if (Valor == null || !Data) {
+        return res.status(400).json({ status: 'error', mensagem: 'Valor e data são obrigatórios' });
+    }
+    try {
+        const [result] = await db.execute(
+            'INSERT INTO Financeiro (ID_Pedido, Forma_Pagamento, Valor, Data) VALUES (?, ?, ?, ?)',
+            [ID_Pedido || null, Forma_Pagamento || null, Valor, Data]
+        );
+        res.status(201).json({ status: 'success', id: result.insertId });
+    } catch (error) {
+        console.error('Erro ao inserir financeiro:', error);
+        res.status(500).json({ status: 'error', mensagem: 'Erro ao inserir registro financeiro' });
+    }
+});
+
+/**
+ * DELETE /api/financeiro/:id
+ * Remove um registro financeiro (apenas gerentes)
+ */
+app.delete('/api/financeiro/:id', verificarJWT, verificarRole('gerente'), async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [result] = await db.execute('DELETE FROM Financeiro WHERE ID = ?', [id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ status: 'error', mensagem: 'Registro não encontrado' });
+        }
+        res.status(200).json({ status: 'success', mensagem: 'Registro excluído' });
+    } catch (error) {
+        console.error('Erro ao deletar financeiro:', error);
+        res.status(500).json({ status: 'error', mensagem: 'Erro ao excluir registro financeiro' });
+    }
+});
 
 // ============================================
 // ROTAS DE API PARA FUNCIONÁRIOS

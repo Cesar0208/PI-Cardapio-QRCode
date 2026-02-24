@@ -387,9 +387,7 @@ app.get('/api/funcionarios/:id', verificarJWT, verificarRole('gerente'), async (
  * Requer autenticação JWT e role 'gerente'
  */
 app.post('/api/funcionarios', verificarJWT, verificarRole('gerente'), async (req, res) => {
-    console.log('=== POST /api/funcionarios recebido ===');
     const { Nome, CPF, email, Telefone, Cargo, Senha } = req.body;
-    console.log('Dados recebidos:', { Nome, CPF, email, Cargo, Senha: Senha ? '***' : 'vazio' });
 
     if (!Nome || !CPF || !email || !Cargo || !Senha) {
         return res.status(400).json({
@@ -400,15 +398,12 @@ app.post('/api/funcionarios', verificarJWT, verificarRole('gerente'), async (req
 
     try {
         // Fazer hash da senha usando bcrypt
-        console.log('Iniciando hash da senha para funcionário:', Nome);
         const senhaComHash = await hashSenha(Senha);
-        console.log('Hash criado com sucesso. Hash length:', senhaComHash.length);
 
         const [resultado] = await db.execute(
             'INSERT INTO Funcionarios (Nome, CPF, email, Telefone, Cargo, Senha) VALUES (?, ?, ?, ?, ?, ?)',
             [Nome, CPF, email, Telefone || null, Cargo, senhaComHash]
         );
-        console.log('Funcionário inserido com ID:', resultado.insertId);
         res.status(201).json({
             status: 'success',
             mensagem: 'Funcionário adicionado com sucesso!',

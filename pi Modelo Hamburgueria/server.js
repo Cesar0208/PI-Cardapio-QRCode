@@ -85,21 +85,14 @@ app.post("/login", async (req, res) => {
         let usuario = null;
         let tipo = null;
 
-        // ========= FUNCIONÁRIO =========
-        if (email.includes("@funcionario")) {
-            const [rows] = await db.execute(
-                "SELECT * FROM Funcionarios WHERE email = ?",
-                [email]
-            );
+        // Tentar encontrar o usuário na tabela de Funcionários primeiro
+        const [funcRows] = await db.execute(
+            "SELECT * FROM Funcionarios WHERE email = ?",
+            [email]
+        );
 
-            if (rows.length === 0) {
-                return res.status(401).json({
-                    status: 'error',
-                    mensagem: "Credenciais inválidas."
-                });
-            }
-
-            const funcionario = rows[0];
+        if (funcRows.length > 0) {
+            const funcionario = funcRows[0];
 
             // Comparar senha com hash usando bcrypt
             const isMatch = await compararSenha(senha, funcionario.Senha);
@@ -112,60 +105,33 @@ app.post("/login", async (req, res) => {
 
             usuario = {
                 id: funcionario.ID || funcionario.id,
-                nome: funcionario.Nome
+                nome: funcionario.Nome,
+                cargo: funcionario.Cargo
             };
-            tipo = "funcionario";
+
+            // Determinar o tipo (role) com base no cargo do banco de dados
+            // Se o cargo for 'Gerente', o tipo é 'gerente'. Caso contrário, 'funcionario'.
+            tipo = (funcionario.Cargo && funcionario.Cargo.toLowerCase() === 'gerente')
+                ? 'gerente'
+                : 'funcionario';
         }
-
-        // ========= GERENTE =========
-        else if (email.includes("@gerente")) {
-            const [rows] = await db.execute(
-                "SELECT * FROM Funcionarios WHERE email = ?",
-                [email]
-            );
-
-            if (rows.length === 0) {
-                return res.status(401).json({
-                    status: 'error',
-                    mensagem: "Credenciais inválidas."
-                });
-            }
-
-            const gerente = rows[0];
-
-            // Comparar senha com hash usando bcrypt
-            const isMatch = await compararSenha(senha, gerente.Senha);
-            if (!isMatch) {
-                return res.status(401).json({
-                    status: 'error',
-                    mensagem: "Credenciais inválidas."
-                });
-            }
-
-            usuario = {
-                id: gerente.ID || gerente.id,
-                nome: gerente.Nome
-            };
-            tipo = "gerente";
-        }
-
-        // ========= CLIENTE =========
         else {
-            const [rows] = await db.execute(
+            // Se não encontrou em Funcionários, procurar em Clientes
+            const [clientRows] = await db.execute(
                 "SELECT * FROM Clientes WHERE email = ?",
                 [email]
             );
 
-            if (rows.length === 0) {
+            if (clientRows.length === 0) {
                 return res.status(401).json({
                     status: 'error',
                     mensagem: "Credenciais inválidas."
                 });
             }
 
-            const cliente = rows[0];
+            const cliente = clientRows[0];
 
-            // Usar bcrypt para comparar senha (já está implementado)
+            // Usar bcrypt para comparar senha
             const isMatch = await compararSenha(senha, cliente.Senha);
             if (!isMatch) {
                 return res.status(401).json({

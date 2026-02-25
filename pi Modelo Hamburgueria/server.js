@@ -1098,8 +1098,8 @@ app.listen(PORT, () => {
     console.log(`
     ╔════════════════════════════════════════╗
     ║   Servidor rodando em funcionamento!   ║
-    ║   http://localhost:${PORT}                     ║
-    ║   Modo: ${process.env.NODE_ENV || 'development'}                ║
+    ║   http://localhost:${PORT}             ║
+    ║   Modo: ${process.env.NODE_ENV || 'development'}                    ║
     ╚════════════════════════════════════════╝
     `);
 });

@@ -86,8 +86,14 @@
         
         <div class="page-header">
             <div class="row align-items-center">
-                <div class="col-md-12"> <h2><i class="fas fa-chart-line me-2"></i>Gestão Financeira</h2>
+                <div class="col-md-9">
+                    <h2><i class="fas fa-chart-line me-2"></i>Gestão Financeira</h2>
                     <p class="text-muted mb-0">Controle suas entradas, saídas e saúde financeira do negócio</p>
+                </div>
+                <div class="col-md-3 text-end">
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddTransacao">
+                        <i class="fas fa-plus-circle me-1"></i>Adicionar Transação
+                    </button>
                 </div>
             </div>
         </div>
@@ -178,6 +184,10 @@
                             <label class="form-label">Descrição *</label>
                             <input type="text" class="form-control" id="trans-descricao" required>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Categoria</label>
+                            <input type="text" class="form-control" id="trans-categoria" placeholder="Ex: aluguel, vendas, etc.">
+                        </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Tipo *</label>
@@ -190,6 +200,10 @@
                                 <label class="form-label">Valor (R$) *</label>
                                 <input type="number" step="0.01" class="form-control" id="trans-valor" required>
                             </div>
+                        </div>
+                        <div class="text-end mt-4">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
                         </div>
                     </form>
                 </div>
@@ -209,15 +223,21 @@
 
         async function carregarTransacoes() {
             try {
-                // Dados Fake para demonstração
-                transacoes = [
-                    { id: 1, data: '2023-10-25', descricao: 'Venda Burger King-Size', categoria: 'venda', tipo: 'receita', valor: 45.90 },
-                    { id: 2, data: '2023-10-24', descricao: 'Compra de Insumos (Carne)', categoria: 'fornecedor', tipo: 'despesa', valor: 500.00 },
-                    { id: 3, data: '2023-10-23', descricao: 'Conta de Energia', categoria: 'infraestrutura', tipo: 'despesa', valor: 250.00 }
-                ];
+                const resp = await fetch(API_URL, { credentials: 'include' });
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const body = await resp.json();
+                if (body.status !== 'success') throw new Error(body.mensagem || 'erro');
+                transacoes = body.data.map(item => ({
+                    id: item.ID,
+                    data: item.Data,
+                    descricao: item.Forma_Pagamento || '',                  // user text
+                    categoria: item.Categoria || (item.ID_Pedido ? `Pedido #${item.ID_Pedido}` : ''),
+                    tipo: item.Valor >= 0 ? 'receita' : 'despesa',
+                    valor: Math.abs(parseFloat(item.Valor))
+                }));
                 renderizarTransacoes();
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro ao carregar transações:', error);
             }
         }
 
@@ -286,8 +306,67 @@
             renderizarTransacoes();
         }
 
+        async function excluirTransacao(id) {
+            try {
+                const resp = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (resp.ok) carregarTransacoes();
+                else console.error('Falha ao excluir', await resp.text());
+            } catch (e) {
+                console.error('Erro ao excluir transação', e);
+            }
+        }
+
+        const form = document.getElementById('form-transacao');
+        if (form) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const descricao = document.getElementById('trans-descricao').value;
+                const categoriaForm = document.getElementById('trans-categoria').value;
+                const tipo = document.getElementById('trans-tipo').value;
+                const valor = parseFloat(document.getElementById('trans-valor').value);
+                const data = new Date().toISOString().split('T')[0];
+                try {
+                    const body = {
+                        Forma_Pagamento: descricao,
+                        Categoria: categoriaForm || null,
+                        Valor: tipo === 'receita' ? valor : -valor,
+                        Data: data
+                    };
+                    const resp = await fetch(API_URL, {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
+                    });
+                    if (resp.ok) {
+                        carregarTransacoes();
+                        const modalEl = document.getElementById('modalAddTransacao');
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.hide();
+                        document.getElementById('form-transacao').reset();
+                    } else {
+                        const t = await resp.text();
+                        console.error('Erro ao adicionar', t);
+                        alert('Falha ao adicionar transação: ' + t);
+                    }
+                } catch (err) {
+                    console.error('Erro ao enviar transação', err);
+                }
+        });
+        }
+
         function fazerLogout() {
-            if(confirm('Deseja sair?')) window.location.href = '/login';
+            if (confirm('Deseja sair?')) {
+                fetch(`${window.location.origin}/logout`, { method: 'POST', credentials: 'include' })
+                    .then(r => {
+                        if (r.ok) window.location.href = '/login';
+                        else alert('Erro ao fazer logout');
+                    })
+                    .catch(e => { console.error(e); alert('Erro ao fazer logout'); });
+            }
         }
     </script>
 </body>

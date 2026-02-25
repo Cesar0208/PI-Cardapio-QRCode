@@ -11,6 +11,20 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 
+// garantir que a tabela Financeiro tenha coluna Categoria
+(async () => {
+    try {
+        await db.execute("ALTER TABLE Financeiro ADD COLUMN Categoria VARCHAR(255) NULL");
+        console.log('Coluna Categoria adicionada na tabela Financeiro.');
+    } catch (err) {
+        if (err.code === 'ER_DUP_FIELDNAME' || err.errno === 1060) {
+            // coluna já existe, nada a fazer
+        } else {
+            console.error('Erro ao garantir coluna Categoria:', err.message);
+        }
+    }
+})();
+
 // Importar middlewares de verificação
 const verificarJWT = require('./middlewares/verificarJWT');
 const verificarRole = require('./middlewares/verificarRole');
@@ -326,7 +340,74 @@ app.get("/financeiro", verificarJWT, verificarRole('gerente'), (req, res) => {
     res.sendFile(path.join(__dirname, "views", "financeiro.html"));
 });
 
+// ============================================
+// ROTAS DE API PARA FINANCEIRO
+// ============================================
 
+/**
+ * GET /api/financeiro
+ * Retorna todos os registros financeiros (apenas gerentes)
+ */
+app.get('/api/financeiro', verificarJWT, verificarRole('gerente'), async (req, res) => {
+    try {
+        const [rows] = await db.execute('SELECT * FROM Financeiro ORDER BY Data DESC');
+        // renomear campo caso tabela antiga não tenha Categoria
+        res.status(200).json({ status: 'success', data: rows });
+    } catch (error) {
+        console.error('Erro ao buscar dados financeiros:', error);
+        res.status(500).json({ status: 'error', mensagem: 'Erro ao buscar dados financeiros' });
+    }
+});
+
+/**
+ * POST /api/financeiro
+ * Adiciona um registro financeiro (apenas gerentes)
+ */
+app.post('/api/financeiro', verificarJWT, verificarRole('gerente'), async (req, res) => {
+    console.log('POST /api/financeiro body', req.body);
+    const { ID_Pedido, Forma_Pagamento, Categoria, Valor, Data } = req.body;
+    if (Valor == null || !Data) {
+        return res.status(400).json({ status: 'error', mensagem: 'Valor e data são obrigatórios' });
+    }
+    const insertQuery = 'INSERT INTO Financeiro (ID_Pedido, Forma_Pagamento, Categoria, Valor, Data) VALUES (?, ?, ?, ?, ?)';
+    const params = [ID_Pedido || null, Forma_Pagamento || null, Categoria || null, Valor, Data];
+
+    try {
+        const [result] = await db.execute(insertQuery, params);
+        return res.status(201).json({ status: 'success', id: result.insertId });
+    } catch (error) {
+        // se coluna Categoria não existir, criar e tentar novamente
+        if (error.code === 'ER_BAD_FIELD_ERROR' && /Categoria/.test(error.message)) {
+            try {
+                await db.execute('ALTER TABLE Financeiro ADD COLUMN Categoria VARCHAR(255) NULL');
+                const [result] = await db.execute(insertQuery, params);
+                return res.status(201).json({ status: 'success', id: result.insertId });
+            } catch (err2) {
+                console.error('Erro ao criar coluna Categoria ou inserir novamente:', err2);
+            }
+        }
+        console.error('Erro ao inserir financeiro:', error);
+        return res.status(500).json({ status: 'error', mensagem: 'Erro ao inserir registro financeiro' });
+    }
+});
+
+/**
+ * DELETE /api/financeiro/:id
+ * Remove um registro financeiro (apenas gerentes)
+ */
+app.delete('/api/financeiro/:id', verificarJWT, verificarRole('gerente'), async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [result] = await db.execute('DELETE FROM Financeiro WHERE ID = ?', [id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ status: 'error', mensagem: 'Registro não encontrado' });
+        }
+        res.status(200).json({ status: 'success', mensagem: 'Registro excluído' });
+    } catch (error) {
+        console.error('Erro ao deletar financeiro:', error);
+        res.status(500).json({ status: 'error', mensagem: 'Erro ao excluir registro financeiro' });
+    }
+});
 
 // ============================================
 // ROTAS DE API PARA FUNCIONÁRIOS
@@ -842,6 +923,12 @@ app.post("/api/pedidos", verificarJWT, verificarRole('cliente'), async (req, res
                 [idPedido, item.id, item.quantity, item.price]
             );
         }
+
+        // 3. Inserir registro financeiro vinculando este pedido
+        await connection.execute(
+            'INSERT INTO Financeiro (ID_Pedido, Forma_Pagamento, Categoria, Valor, Data) VALUES (?, ?, ?, ?, NOW())',
+            [idPedido, formaPagamento || null, null, total || 0]
+        );
 
         await connection.commit();
 

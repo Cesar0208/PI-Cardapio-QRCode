@@ -27,4 +27,4 @@ INSERT INTO Produtos (Nome, Descricao, Quantidade, Preco_Unitario, Categoria, im
 ('Combo 1 - Classic', 'Classic Burger + Batata Grande + Refrigerante 350ml', 30, 38.90, 'combo', 'https://th.bing.com/th/id/OIP.9jMyDzZSbw6YizJoh_K-bwHaE7?w=279&h=186&c=7&r=0&o=7&pid=1.7&rm=3', TRUE, TRUE),
 ('Combo 2 - X-Bacon', 'X-Bacon + Batata Grande + Refrigerante 350ml', 25, 42.90, 'combo', 'https://tse2.mm.bing.net/th/id/OIP.Zb9GtbUHDs0869Qag8dbnAAAAA?rs=1&pid=ImgDetMain&o=7&rm=3', TRUE, TRUE),
 ('Combo 3 - X-Tudo', 'X-Tudo + Batata Grande + Refrigerante 350ml + Sobremesa', 20, 52.90, 'combo', 'https://tse3.mm.bing.net/th/id/OIP.7RPNbMGmJOyG-3LfHP3HeAAAAA?pid=ImgDet&w=206&h=137&c=7&o=7&rm=3', TRUE, TRUE),
-('Combo Família', '2 Hambúrgueres + 2 Batatas Grandes + 1 Refrigerantes', 15, 95.00, 'combo', 'https://alloydeliveryimages.s3.sa-east-1.amazonaws.com/item_images/15763/6803e9b87900e7kpzd.webp', TRUE, TRUE);
+('Combo Família', '2 Hambúrgueres + 2 Batatas Grandes + 1 Refrigerantes', 15, 95.00, 'combo', 'https://alloydeliveryimages.s3.sa-east-1.amazonaws.com/item_images/15763/6803e9b87900e7kpzd.webp', TRUE, TRUE); 

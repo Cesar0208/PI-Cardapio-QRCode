@@ -11,20 +11,6 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 
-// garantir que a tabela Financeiro tenha coluna Categoria
-(async () => {
-    try {
-        await db.execute("ALTER TABLE Financeiro ADD COLUMN Categoria VARCHAR(255) NULL");
-        console.log('Coluna Categoria adicionada na tabela Financeiro.');
-    } catch (err) {
-        if (err.code === 'ER_DUP_FIELDNAME' || err.errno === 1060) {
-            // coluna já existe, nada a fazer
-        } else {
-            console.error('Erro ao garantir coluna Categoria:', err.message);
-        }
-    }
-})();
-
 // Importar middlewares de verificação
 const verificarJWT = require('./middlewares/verificarJWT');
 const verificarRole = require('./middlewares/verificarRole');
@@ -1059,7 +1045,7 @@ app.get("/api/pedidos/:id", verificarJWT, async (req, res) => {
                 WHEN p.Tipo_Pedido = 'pickup' THEN 'Retirada na Loja'
                 ELSE CONCAT(p.Endereco, ', ', p.Numero, ' - ', p.Bairro, ', ', p.Cidade, ' - CEP: ', p.CEP, IF(p.Complemento IS NOT NULL AND p.Complemento != '', CONCAT(' (', p.Complemento, ')'), ''))
             END AS EnderecoEntrega,
-            'Sem picles e maionese no acompanhamento' AS Observacoes, 
+            'Nenhuma' AS Observacoes, 
             c.Nome AS ClienteNome,
             c.CPF AS ClienteCPF,
             f.Nome AS FuncionarioNome,

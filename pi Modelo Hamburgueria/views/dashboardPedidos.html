@@ -307,12 +307,14 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                     <button type="button" class="btn btn-primary" onclick="salvarStatusDeSelect()"><i
                             class="fas fa-save me-1"></i> Atualizar Status</button>
-                    <button type="button" class="btn btn-success"><i class="fas fa-print me-1"></i> Comanda</button>
+                    <button type="button" class="btn btn-success" onclick="gerarComandaPDF()"><i
+                            class="fas fa-file-pdf me-1"></i> Comanda</button>
                 </div>
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
         window.applyTableFilters = function () {
@@ -345,6 +347,7 @@
 
         const DETAILS_API_URL = `${window.location.origin}/api/pedidos/`; // URL base dinâmica
         const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+        let currentOrderData = null; // Armazena os dados do pedido aberto no momento
 
         function getStatusModalHtml(status) {
             const statusMap = {
@@ -392,6 +395,8 @@
                 if (!data) {
                     throw new Error('Dados não encontrados.');
                 }
+
+                currentOrderData = data; // Salva para o PDF
 
                 // 1. DADOS PRINCIPAIS
                 clienteEl.textContent = `${data.ClienteNome} (${data.ClienteCPF})`;
@@ -498,6 +503,109 @@
             if (confirm(`Tem certeza que deseja marcar o pedido #${orderId} como ${status.toUpperCase()}?`)) {
                 atualizarStatusPedido(orderId, status);
             }
+        }
+
+        async function gerarComandaPDF() {
+            if (!currentOrderData) {
+                alert("Dados do pedido não carregados.");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                unit: 'mm',
+                format: [80, 150] // Tamanho cupom fiscal aproximado
+            });
+
+            const data = currentOrderData;
+            const margem = 5;
+            let y = 10;
+
+            // Cabeçalho
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("BurguerPI - COMANDA", 40, y, { align: "center" });
+            y += 7;
+
+            doc.setFontSize(10);
+            doc.text(`Pedido: #${data.ID}`, margem, y);
+            y += 5;
+            doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, margem, y);
+            y += 7;
+
+            // Divisor
+            doc.line(margem, y, 75, y);
+            y += 5;
+
+            // Cliente
+            doc.setFont("helvetica", "bold");
+            doc.text("CLIENTE:", margem, y);
+            y += 4;
+            doc.setFont("helvetica", "normal");
+            doc.text(`${data.ClienteNome}`, margem, y);
+            y += 4;
+            doc.text(`CPF: ${data.ClienteCPF}`, margem, y);
+            y += 4;
+            if (data.Tipo_Pedido === 'delivery') {
+                doc.setFont("helvetica", "bold");
+                doc.text("ENDEREÇO:", margem, y);
+                y += 4;
+                doc.setFont("helvetica", "normal");
+                const splitEndereco = doc.splitTextToSize(data.EnderecoEntrega, 70);
+                doc.text(splitEndereco, margem, y);
+                y += splitEndereco.length * 4;
+            } else {
+                doc.text("Retirada na Loja", margem, y);
+                y += 4;
+            }
+            y += 2;
+
+            // Itens
+            doc.line(margem, y, 75, y);
+            y += 5;
+            doc.setFont("helvetica", "bold");
+            doc.text("ITENS:", margem, y);
+            y += 5;
+            doc.setFont("helvetica", "normal");
+
+            if (data.ItensDetalhes) {
+                const itens = data.ItensDetalhes.split('||');
+                itens.forEach(item => {
+                    const splitItem = doc.splitTextToSize(item.trim(), 70);
+                    doc.text(splitItem, margem, y);
+                    y += splitItem.length * 4;
+                });
+            }
+
+            y += 2;
+            doc.line(margem, y, 75, y);
+            y += 5;
+
+            // Totais e Pagamento
+            doc.setFont("helvetica", "bold");
+            doc.text(`Total: R$ ${data.Valor}`, margem, y);
+            y += 5;
+            doc.setFont("helvetica", "normal");
+            doc.text(`Pagamento: ${data.Forma_Pagamento}`, margem, y);
+            y += 7;
+
+            // Observações
+            if (data.Observacoes && data.Observacoes !== 'Nenhuma') {
+                doc.setFont("helvetica", "bold");
+                doc.text("OBSERVAÇÕES:", margem, y);
+                y += 4;
+                doc.setFont("helvetica", "normal");
+                const splitObs = doc.splitTextToSize(data.Observacoes, 70);
+                doc.text(splitObs, margem, y);
+                y += splitObs.length * 4;
+            }
+
+            y += 5;
+            doc.setFontSize(8);
+            doc.text("Obrigado pela preferência!", 40, y, { align: "center" });
+
+            // Salvar
+            doc.save(`comanda_pedido_${data.ID}.pdf`);
         }
 
 

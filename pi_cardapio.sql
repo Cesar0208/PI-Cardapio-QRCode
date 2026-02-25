@@ -70,6 +70,7 @@ CREATE TABLE Financeiro (
     Forma_Pagamento VARCHAR(50),
     Valor DECIMAL(10, 2) NOT NULL,
     Data DATE NOT NULL,
+    Categoria VARCHAR(255) NULL,
     
     FOREIGN KEY (ID_Pedido) REFERENCES Pedidos(ID)
 );

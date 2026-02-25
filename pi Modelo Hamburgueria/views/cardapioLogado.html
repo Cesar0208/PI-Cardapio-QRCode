@@ -843,10 +843,6 @@
     </div>
 
     <script>
-
-        // Arrumar isso aqui e colocar JWT
-
-
         document.addEventListener("DOMContentLoaded", () => {
             const nomeUsuario = localStorage.getItem("nomeUsuario");
             if (nomeUsuario) {
@@ -884,9 +880,6 @@
                         currency: 'BRL'
                     }).format(produto.Preco_Unitario);
 
-                    // 3. Monta o HTML dinâmico
-                    // ATENÇÃO: Verifique se os nomes produto.Nome, produto.Descricao, etc
-                    // batem exatamente com as colunas do seu Banco de Dados.
                     const html = `
                     <div class="col-md-6 col-lg-3 menu-item" data-category="${produto.Categoria || 'geral'}">
                         <div class="menu-card">
@@ -1103,7 +1096,5 @@
             }, 1000); // Espera 1 segundo antes de sumir
         });
     </script>
-
 </body>
-
 </html>

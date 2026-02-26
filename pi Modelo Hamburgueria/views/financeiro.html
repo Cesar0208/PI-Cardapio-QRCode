@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +23,9 @@
             color: var(--secondary-color);
         }
 
-        .navbar { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+        .navbar {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
 
         .container-custom {
             max-width: 1400px;
@@ -42,13 +45,19 @@
             color: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s;
         }
 
-        .stats-card:hover { transform: translateY(-3px); }
+        .stats-card:hover {
+            transform: translateY(-3px);
+        }
 
-        .stats-number { font-size: 1.8rem; font-weight: 700; margin: 10px 0; }
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
 
         .transaction-table {
             background: white;
@@ -57,8 +66,21 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
-        .badge-receita { background-color: var(--success-color); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; }
-        .badge-despesa { background-color: var(--danger-color); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; }
+        .badge-receita {
+            background-color: var(--success-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .badge-despesa {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
 
         .filter-section {
             background: white;
@@ -69,21 +91,32 @@
         }
     </style>
 </head>
+
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/menugerente">
-                <i class="fas fa-wallet me-2"></i>BurguerPI - Financeiro
+            <a class="navbar-brand d-flex align-items-center" href="/menugerente">
+                <i class="fas fa-wallet me-2"></i>
+                <span class="d-none d-sm-inline">BurguerPI - Financeiro</span>
+                <span class="d-inline d-sm-none">Financeiro</span>
             </a>
-            <button class="btn btn-outline-light ms-auto" onclick="fazerLogout()">
-                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarFinanceiro"
+                aria-controls="navbarFinanceiro" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="collapse navbar-collapse" id="navbarFinanceiro">
+                <div class="navbar-nav ms-auto py-2 py-lg-0">
+                    <button class="btn btn-outline-light" onclick="fazerLogout()">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
     <div class="container-custom">
-        
+
         <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-md-9">
@@ -128,7 +161,8 @@
         <div class="filter-section">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" id="filter-search" placeholder="Buscar por descrição..." onkeyup="filtrarTransacoes()">
+                    <input type="text" class="form-control" id="filter-search" placeholder="Buscar por descrição..."
+                        onkeyup="filtrarTransacoes()">
                 </div>
                 <div class="col-md-3">
                     <select class="form-select" id="filter-tipo" onchange="filtrarTransacoes()">
@@ -149,20 +183,22 @@
         </div>
 
         <div class="transaction-table">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th class="ps-4">Data</th>
-                        <th>Descrição</th>
-                        <th>Categoria</th>
-                        <th>Tipo</th>
-                        <th>Valor</th>
-                        <th class="text-end pe-4">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="transacoes-container">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Data</th>
+                            <th>Descrição</th>
+                            <th>Categoria</th>
+                            <th>Tipo</th>
+                            <th>Valor</th>
+                            <th class="text-end pe-4">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transacoes-container">
                     </tbody>
-            </table>
+                </table>
+            </div>
             <div id="empty-state" class="text-center py-5" style="display: none;">
                 <i class="fas fa-receipt fa-4x text-muted mb-3"></i>
                 <h4 class="text-muted">Nenhuma transação encontrada</h4>
@@ -186,7 +222,8 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Categoria</label>
-                            <input type="text" class="form-control" id="trans-categoria" placeholder="Ex: aluguel, vendas, etc.">
+                            <input type="text" class="form-control" id="trans-categoria"
+                                placeholder="Ex: aluguel, vendas, etc.">
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -244,7 +281,7 @@
         function renderizarTransacoes() {
             const container = document.getElementById('transacoes-container');
             const filtered = filtrarDados();
-            
+
             if (filtered.length === 0) {
                 container.innerHTML = '';
                 document.getElementById('empty-state').style.display = 'block';
@@ -273,7 +310,7 @@
         function atualizarResumo() {
             const receitas = transacoes.filter(t => t.tipo === 'receita').reduce((acc, t) => acc + t.valor, 0);
             const despesas = transacoes.filter(t => t.tipo === 'despesa').reduce((acc, t) => acc + t.valor, 0);
-            
+
             document.getElementById('saldo-total').textContent = `R$ ${(receitas - despesas).toFixed(2)}`;
             document.getElementById('total-receitas').textContent = `R$ ${receitas.toFixed(2)}`;
             document.getElementById('total-despesas').textContent = `R$ ${despesas.toFixed(2)}`;
@@ -321,7 +358,7 @@
 
         const form = document.getElementById('form-transacao');
         if (form) {
-            form.addEventListener('submit', async function(e) {
+            form.addEventListener('submit', async function (e) {
                 e.preventDefault();
                 const descricao = document.getElementById('trans-descricao').value;
                 const categoriaForm = document.getElementById('trans-categoria').value;
@@ -355,7 +392,7 @@
                 } catch (err) {
                     console.error('Erro ao enviar transação', err);
                 }
-        });
+            });
         }
 
         function fazerLogout() {
@@ -370,4 +407,5 @@
         }
     </script>
 </body>
+
 </html>

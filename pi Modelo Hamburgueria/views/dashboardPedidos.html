@@ -130,15 +130,27 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand logo ms-2 text-primary" href="#">
-                <i class="fas fa-list-check me-2"></i>Gerenciamento de Pedidos
+            <a class="navbar-brand logo ms-2 text-primary d-flex align-items-center" href="/menugerente">
+                <i class="fas fa-list-check me-2"></i>
+                <span class="d-none d-sm-inline">Gerenciamento de Pedidos</span>
+                <span class="d-inline d-sm-none">Pedidos</span>
             </a>
-            <span class="navbar-text text-muted me-3 d-none d-md-block">
-                Dados atualizados em: <span id="lastUpdated" class="fw-semibold"></span>
-            </span>
-            <button class="btn btn-outline-danger ms-auto" onclick="fazerLogout()" title="Sair da conta">
-                <i class="fas fa-sign-out-alt me-2"></i>Logout
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarDashboard"
+                aria-controls="navbarDashboard" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
+
+            <div class="collapse navbar-collapse" id="navbarDashboard">
+                <div class="navbar-nav ms-auto align-items-lg-center">
+                    <span class="navbar-text text-muted me-lg-3 my-2 my-lg-0">
+                        <i class="fas fa-sync-alt me-1"></i> <span id="lastUpdated" class="fw-semibold"></span>
+                    </span>
+                    <button class="btn btn-outline-danger" onclick="fazerLogout()" title="Sair da conta">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -237,7 +249,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Data & Hora</th>
-                                    <th>Cliente (CPF)</th>
+                                    <th>Cliente</th>
                                     <th>Valor</th>
                                     <th>Pagamento</th>
                                     <th>Status</th>
@@ -248,7 +260,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <small class="text-muted mt-2 d-block">Clique em "Ver" para abrir os detalhes do pedido.</small>
+                    <small class="text-muted mt-2 d-block">Arraste para os lados para ver mais colunas se
+                        necessário.</small>
                 </div>
             </div>
 

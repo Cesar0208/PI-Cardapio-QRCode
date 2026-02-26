@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -202,21 +203,32 @@
         }
     </style>
 </head>
+
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/menugerente">
-                <i class="fas fa-hamburger me-2"></i>BurguerPI - Gerenciar Cardápio
+            <a class="navbar-brand d-flex align-items-center" href="/menugerente">
+                <i class="fas fa-hamburger me-2"></i>
+                <span class="d-none d-sm-inline">BurguerPI - Gerenciar Cardápio</span>
+                <span class="d-inline d-sm-none">Cardápio</span>
             </a>
-            <button class="btn btn-outline-light ms-auto" onclick="fazerLogout()" title="Sair da conta">
-                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCardapio"
+                aria-controls="navbarCardapio" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="collapse navbar-collapse" id="navbarCardapio">
+                <div class="navbar-nav ms-auto py-2 py-lg-0">
+                    <button class="btn btn-outline-light" onclick="fazerLogout()" title="Sair da conta">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
     <div class="container-custom">
-        
+
         <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-md-8">
@@ -261,7 +273,8 @@
         <div class="filter-section">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" id="filter-search" placeholder="Buscar por nome..." onkeyup="filtrarItens()">
+                    <input type="text" class="form-control" id="filter-search" placeholder="Buscar por nome..."
+                        onkeyup="filtrarItens()">
                 </div>
                 <div class="col-md-3">
                     <select class="form-select" id="filter-category" onchange="filtrarItens()">
@@ -303,24 +316,27 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i><span id="modal-title-text">Adicionar Novo Item</span></h5>
+                    <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i><span id="modal-title-text">Adicionar
+                            Novo Item</span></h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="form-item">
                         <input type="hidden" id="item-id">
-                        
+
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <label for="item-nome" class="form-label">Nome do Item *</label>
-                                <input type="text" class="form-control" id="item-nome" required placeholder="Ex: X-Bacon Especial">
+                                <input type="text" class="form-control" id="item-nome" required
+                                    placeholder="Ex: X-Bacon Especial">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="item-categoria" class="form-label">Categoria *</label>
-                                <select class="form-select" id="item-categoria" required onchange="sugerirImagemPorCategoria()">
+                                <select class="form-select" id="item-categoria" required
+                                    onchange="sugerirImagemPorCategoria()">
                                     <option value="">Selecione...</option>
                                     <option value="burgers">Burgers</option>
                                     <option value="bebida">Bebida</option>
@@ -331,29 +347,34 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="item-preco" class="form-label">Preço (R$) *</label>
-                                <input type="number" class="form-control" id="item-preco" step="0.01" min="0" required placeholder="0.00">
+                                <input type="number" class="form-control" id="item-preco" step="0.01" min="0" required
+                                    placeholder="0.00">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <label for="item-descricao" class="form-label">Descrição</label>
-                                <textarea class="form-control" id="item-descricao" rows="3" placeholder="Descreva os ingredientes e características do item..."></textarea>
+                                <textarea class="form-control" id="item-descricao" rows="3"
+                                    placeholder="Descreva os ingredientes e características do item..."></textarea>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <label for="item-quantidade" class="form-label">Quantidade em Estoque</label>
-                                <input type="number" class="form-control" id="item-quantidade" min="0" value="0" placeholder="0">
+                                <input type="number" class="form-control" id="item-quantidade" min="0" value="0"
+                                    placeholder="0">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <label for="item-imagem" class="form-label">URL da Imagem</label>
-                                <input type="url" class="form-control" id="item-imagem" placeholder="https://exemplo.com/imagem.jpg" onchange="previewImagem()">
-                                <small class="text-muted">Selecione uma categoria para sugestão automática de imagem</small>
+                                <input type="url" class="form-control" id="item-imagem"
+                                    placeholder="https://exemplo.com/imagem.jpg" onchange="previewImagem()">
+                                <small class="text-muted">Selecione uma categoria para sugestão automática de
+                                    imagem</small>
                                 <div id="preview-container" style="display: none;">
                                     <img id="preview-img" class="preview-image" alt="Preview">
                                 </div>
@@ -395,7 +416,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         let menuItens = [];
         let editandoId = null;
@@ -422,7 +443,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             carregarItens();
         });
 
@@ -432,7 +453,7 @@
                     credentials: 'include' // Enviar cookie JWT
                 });
                 if (!response.ok) throw new Error('Erro ao carregar produtos');
-                
+
                 const result = await response.json();
                 menuItens = (result.data || result).map(item => ({
                     id: item.ID,
@@ -445,7 +466,7 @@
                     destaque: Boolean(item.destaque),
                     quantidade: item.Quantidade || 0
                 }));
-                
+
                 renderizarItens();
             } catch (error) {
                 console.error('Erro ao carregar produtos:', error);
@@ -471,9 +492,9 @@
         function renderizarItens() {
             const container = document.getElementById('menu-container');
             const emptyState = document.getElementById('empty-state');
-            
+
             const itensFiltrados = filtrarItensArray();
-            
+
             if (itensFiltrados.length === 0) {
                 container.innerHTML = '';
                 emptyState.style.display = 'block';
@@ -482,17 +503,17 @@
                 container.innerHTML = itensFiltrados.map(item => `
                     <div class="col-md-6 col-lg-4 col-xl-3">
                         <div class="card-item">
-                            ${item.imagem ? 
-                                `<img src="${item.imagem}" class="item-image" alt="${item.nome}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            ${item.imagem ?
+                        `<img src="${item.imagem}" class="item-image" alt="${item.nome}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                  <div class="image-placeholder" style="display: none;">
                                      <i class="fas fa-image"></i>
                                      <small>Sem imagem</small>
                                  </div>` :
-                                `<div class="image-placeholder">
+                        `<div class="image-placeholder">
                                      <i class="fas fa-${getCategoriaIcon(item.categoria)}"></i>
                                      <small>${item.categoria}</small>
                                  </div>`
-                            }
+                    }
                             <div class="item-name">${item.nome}</div>
                             <div class="item-price">R$ ${item.preco.toFixed(2)}</div>
                             <div class="item-description">${item.descricao || 'Sem descrição'}</div>
@@ -518,7 +539,7 @@
                     </div>
                 `).join('');
             }
-            
+
             atualizarEstatisticas();
         }
 
@@ -547,7 +568,7 @@
         function sugerirImagemPorCategoria() {
             const categoria = document.getElementById('item-categoria').value;
             const campoImagem = document.getElementById('item-imagem');
-            
+
             if (!campoImagem.value && categoria) {
                 campoImagem.value = getImagemPadrao(categoria);
                 previewImagem();
@@ -597,14 +618,14 @@
                 if (!response.ok) throw new Error('Erro ao salvar produto');
 
                 const resultado = await response.json();
-                
+
                 const modal = bootstrap.Modal.getInstance(document.getElementById('modalAddItem'));
                 modal.hide();
-                
+
                 limparFormulario();
-                
+
                 await carregarItens();
-                
+
                 mostrarAlerta(editandoId ? 'Produto atualizado com sucesso!' : 'Produto adicionado com sucesso!', 'success');
             } catch (error) {
                 console.error('Erro ao salvar produto:', error);
@@ -615,7 +636,7 @@
         function editarItem(id) {
             editandoId = id;
             const item = menuItens.find(i => i.id === id);
-            
+
             document.getElementById('modal-title-text').textContent = 'Editar Item';
             document.getElementById('item-id').value = item.id;
             document.getElementById('item-nome').value = item.nome;
@@ -626,11 +647,11 @@
             document.getElementById('item-destaque').checked = item.destaque;
             document.getElementById('item-imagem').value = item.imagem;
             document.getElementById('item-quantidade').value = item.quantidade || 0;
-            
+
             if (item.imagem) {
                 previewImagem();
             }
-            
+
             const modal = new bootstrap.Modal(document.getElementById('modalAddItem'));
             modal.show();
         }
@@ -686,7 +707,7 @@
             const url = document.getElementById('item-imagem').value;
             const previewContainer = document.getElementById('preview-container');
             const previewImg = document.getElementById('preview-img');
-            
+
             if (url) {
                 previewImg.src = url;
                 previewContainer.style.display = 'block';
@@ -699,13 +720,13 @@
             const searchTerm = document.getElementById('filter-search').value.toLowerCase();
             const category = document.getElementById('filter-category').value;
             const status = document.getElementById('filter-status').value;
-            
+
             return menuItens.filter(item => {
-                const matchSearch = item.nome.toLowerCase().includes(searchTerm) || 
-                                  item.descricao.toLowerCase().includes(searchTerm);
+                const matchSearch = item.nome.toLowerCase().includes(searchTerm) ||
+                    item.descricao.toLowerCase().includes(searchTerm);
                 const matchCategory = !category || item.categoria === category;
                 const matchStatus = !status || (status === 'disponivel' ? item.disponivel : !item.disponivel);
-                
+
                 return matchSearch && matchCategory && matchStatus;
             });
         }
@@ -726,7 +747,7 @@
             const disponiveis = menuItens.filter(i => i.disponivel).length;
             const indisponiveis = total - disponiveis;
             const categorias = new Set(menuItens.map(i => i.categoria)).size;
-            
+
             document.getElementById('total-itens').textContent = total;
             document.getElementById('itens-disponiveis').textContent = disponiveis;
             document.getElementById('itens-indisponiveis').textContent = indisponiveis;
@@ -741,9 +762,9 @@
                 ${mensagem}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
-            
+
             document.body.appendChild(alertDiv);
-            
+
             setTimeout(() => {
                 alertDiv.remove();
             }, 3000);
@@ -755,4 +776,5 @@
     </script>
 
 </body>
+
 </html>

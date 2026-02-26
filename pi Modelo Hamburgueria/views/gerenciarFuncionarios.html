@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -103,15 +104,26 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/menugerente">
-                <i class="fas fa-users me-2"></i>BurguerPI - Gerenciar Funcionários
+            <a class="navbar-brand d-flex align-items-center" href="/menugerente">
+                <i class="fas fa-users me-2"></i>
+                <span class="d-none d-sm-inline">BurguerPI - Funcionários</span>
+                <span class="d-inline d-sm-none">Funcionários</span>
             </a>
-            <button class="btn btn-outline-light ms-auto" onclick="fazerLogout()" title="Sair da conta">
-                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarFuncionarios"
+                aria-controls="navbarFuncionarios" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="collapse navbar-collapse" id="navbarFuncionarios">
+                <div class="navbar-nav ms-auto py-2 py-lg-0">
+                    <button class="btn btn-outline-light" onclick="fazerLogout()" title="Sair da conta">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -164,7 +176,7 @@
                 <div class="modal-body">
                     <form id="formFuncionario">
                         <input type="hidden" id="funcionarioId">
-                        
+
                         <div class="mb-3">
                             <label for="nome" class="form-label">Nome</label>
                             <input type="text" class="form-control" id="nome" required>
@@ -195,7 +207,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="senha" class="form-label">Senha<span id="senhaHint" class="text-muted ms-2">(deixar em branco para manter a atual)</span></label>
+                            <label for="senha" class="form-label">Senha<span id="senhaHint"
+                                    class="text-muted ms-2">(deixar em branco para manter a atual)</span></label>
                             <input type="password" class="form-control" id="senha">
                         </div>
                     </form>
@@ -261,7 +274,7 @@
                 });
             } catch (error) {
                 console.error('Erro ao carregar funcionários:', error);
-                document.getElementById('funcionariosTableBody').innerHTML = 
+                document.getElementById('funcionariosTableBody').innerHTML =
                     '<tr><td colspan="6" class="text-center text-danger">Erro ao carregar funcionários</td></tr>';
             }
         }
@@ -417,4 +430,5 @@
         });
     </script>
 </body>
+
 </html>

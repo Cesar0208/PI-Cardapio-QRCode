@@ -355,7 +355,6 @@ app.get('/api/financeiro', verificarJWT, verificarRole('gerente'), async (req, r
  * Adiciona um registro financeiro (apenas gerentes)
  */
 app.post('/api/financeiro', verificarJWT, verificarRole('gerente'), async (req, res) => {
-    console.log('POST /api/financeiro body', req.body);
     const { ID_Pedido, Forma_Pagamento, Categoria, Valor, Data } = req.body;
     if (Valor == null || !Data) {
         return res.status(400).json({ status: 'error', mensagem: 'Valor e data são obrigatórios' });

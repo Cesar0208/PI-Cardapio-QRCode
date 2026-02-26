@@ -12,12 +12,13 @@
 
     <style>
         :root {
-            --primary-color: #f700009a;
-            --secondary-color: #ff00009a;
-            --bg-gradient: linear-gradient(135deg, #f315159a 0%, #af86869a 100%);
+            --primary-color: #D97706;
+            --secondary-color: #EA580C;
+            --accent-color: #92400E;
+            --bg-gradient: linear-gradient(135deg, #FEF3C7 0%, #f3efde 100%);
             --transition-speed: 0.4s;
             --glass-bg: rgba(255, 255, 255, 0.95);
-            --glass-header: rgba(255, 255, 255, 0.15);
+            --glass-header: rgba(0, 0, 0, 0.1);
         }
 
         body {
@@ -33,44 +34,40 @@
         /* --- Header & Navbar Styles --- */
         .site-header {
             padding: 10px 0;
-            background: var(--glass-header);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             transition: 0.3s;
         }
 
         .logo {
-            color: #fff;
-            font-weight: 700;
+            color: var(--secondary-color);
+            font-weight: 800;
             font-size: 1.5rem;
+            letter-spacing: -0.5px;
             text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .logo:hover {
-            color: #f1f5f9;
+            color: var(--primary-color);
         }
 
         /* Links da Navegação */
         .nav-link-custom {
-            color: rgba(255, 255, 255, 0.9);
+            color: #64748b;
             text-decoration: none;
             margin: 0 15px;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 0.95rem;
             transition: color 0.3s;
             position: relative;
             padding: 10px 0;
-            /* Área de toque maior no mobile */
             display: block;
-            /* Garante que fique em linha no mobile */
         }
 
         .nav-link-custom:hover,
         .nav-link-custom.active {
-            color: #fff;
-            font-weight: 600;
+            color: var(--primary-color);
         }
 
         /* Sublinhado animado (Apenas Desktop) */
@@ -82,7 +79,7 @@
                 height: 2px;
                 bottom: 5px;
                 left: 0;
-                background-color: #fff;
+                background-color: var(--primary-color);
                 transition: width 0.3s;
             }
 
@@ -159,11 +156,11 @@
             left: 5px;
             width: calc(50% - 5px);
             height: calc(100% - 10px);
-            background: var(--primary-color);
+            background: var(--secondary-color);
             border-radius: 50px;
             transition: transform var(--transition-speed) cubic-bezier(0.68, -0.55, 0.27, 1.55);
             z-index: 1;
-            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
+            box-shadow: 0 4px 6px rgba(234, 88, 12, 0.3);
         }
 
         .forms-wrapper {
@@ -197,7 +194,7 @@
         }
 
         .form-control:focus {
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
             border-color: var(--primary-color);
         }
 
@@ -216,7 +213,7 @@
             font-size: 1rem;
             margin-top: 1rem;
             transition: transform 0.2s, background 0.3s;
-            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.25);
+            box-shadow: 0 4px 6px rgba(217, 119, 6, 0.25);
         }
 
         .btn-custom:hover {
@@ -246,12 +243,12 @@
 
         /* --- Footer Styles --- */
         .site-footer {
-            background: rgba(0, 0, 0, 0.2);
-            color: rgba(255, 255, 255, 0.8);
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 40px 0 20px;
+            margin-top: 60px;
             text-align: center;
-            padding: 20px 0;
             font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -264,9 +261,9 @@
                 <i class="fas fa-hamburger me-2"></i>Cardápio
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="fas fa-bars text-white fs-3"></span>
+                <span class="fas fa-bars text-primary fs-3" style="color: var(--secondary-color) !important;"></span>
             </button>
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">

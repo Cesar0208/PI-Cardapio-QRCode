@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,8 +27,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--bg-gradient); /* Mantém a identidade visual */
-            z-index: 9999; /* Garante que fique acima de tudo */
+            background: var(--bg-gradient);
+            /* Mantém a identidade visual */
+            z-index: 9999;
+            /* Garante que fique acima de tudo */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -37,11 +40,12 @@
 
         .loader-icon {
             font-size: 5rem;
-            color: lch(80.68% 77.76 83.25); /* Cor de pão/queijo */
+            color: lch(80.68% 77.76 83.25);
+            /* Cor de pão/queijo */
             margin-bottom: 20px;
             /* Animação composta: gira e pulsa */
             animation: burger-bounce 1.5s infinite ease-in-out;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
         }
 
         .loader-text {
@@ -54,15 +58,30 @@
 
         /* Animação do Hambúrguer */
         @keyframes burger-bounce {
-            0% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.2) rotate(180deg); }
-            100% { transform: scale(1) rotate(360deg); }
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.2) rotate(180deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(360deg);
+            }
         }
 
         /* Animação do Texto */
         @keyframes pulse-text {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
 
         /* Classe para esconder o loader via JS */
@@ -75,14 +94,16 @@
             font-family: 'Poppins', sans-serif;
             background: #f1f5f9;
             color: #334155;
-            padding-top: 80px; /* Espaço para o header fixo */
+            padding-top: 80px;
+            /* Espaço para o header fixo */
         }
 
         /* --- Header Glassmorphism --- */
         /* --- Header & Navbar --- */
         .site-header {
             padding: 10px 0;
-            background: rgba(255, 255, 255, 0.9); /* Fundo mais sólido para leitura */
+            background: rgba(255, 255, 255, 0.9);
+            /* Fundo mais sólido para leitura */
             backdrop-filter: blur(12px);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
@@ -103,15 +124,18 @@
         .nav-link-custom {
             color: #64748b;
             font-weight: 600;
-            margin: 0 15px; /* Espaçamento horizontal */
+            margin: 0 15px;
+            /* Espaçamento horizontal */
             text-decoration: none;
             font-size: 0.95rem;
             position: relative;
-            padding: 10px 0; /* Área de clique maior no mobile */
+            padding: 10px 0;
+            /* Área de clique maior no mobile */
             display: block;
         }
 
-        .nav-link-custom:hover, .nav-link-custom.active {
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
             color: var(--primary-color);
         }
 
@@ -135,7 +159,8 @@
 
         /* Botão do Hambúrguer */
         .navbar-toggler:focus {
-            box-shadow: none; /* Remove a borda azul padrão do Bootstrap */
+            box-shadow: none;
+            /* Remove a borda azul padrão do Bootstrap */
             outline: none;
         }
 
@@ -163,7 +188,8 @@
             padding: 2px 6px;
             font-size: 0.7rem;
             font-weight: bold;
-            border: 2px solid white; /* Borda branca para destacar */
+            border: 2px solid white;
+            /* Borda branca para destacar */
         }
 
         /* --- Hero Section --- */
@@ -174,12 +200,22 @@
             border-radius: 0 0 30px 30px;
             text-align: center;
             margin-bottom: 40px;
-            margin-top: -20px; /* Colar no header visualmente */
+            margin-top: -20px;
+            /* Colar no header visualmente */
             box-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
         }
 
-        .hero h2 { font-weight: 700; margin-bottom: 15px; }
-        .hero p { opacity: 0.9; max-width: 600px; margin: 0 auto; font-size: 1.1rem; }
+        .hero h2 {
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
 
         /* --- Filtros de Categoria --- */
         .category-filters {
@@ -203,7 +239,7 @@
 
         .filter-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
         .filter-btn.active {
@@ -218,7 +254,7 @@
             background: var(--card-bg);
             border-radius: 20px;
             overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
             height: 100%;
             display: flex;
@@ -228,14 +264,15 @@
 
         .menu-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
         }
 
         .thumb {
             height: 200px;
             width: 100%;
             object-fit: cover;
-            background-color: #e2e8f0; /* Fallback se imagem falhar */
+            background-color: #e2e8f0;
+            /* Fallback se imagem falhar */
         }
 
         .card-body {
@@ -256,7 +293,8 @@
             color: #64748b;
             font-size: 0.9rem;
             line-height: 1.5;
-            flex: 1; /* Empurra o footer para baixo */
+            flex: 1;
+            /* Empurra o footer para baixo */
             margin-bottom: 15px;
         }
 
@@ -298,7 +336,7 @@
             padding: 40px 0 20px;
             margin-top: 60px;
         }
-        
+
         /* --- Toast Notification --- */
         .toast-container {
             position: fixed;
@@ -320,8 +358,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
         }
 
         .promo-banner h4 {
@@ -369,7 +414,7 @@
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 40px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .stats-grid {
@@ -412,7 +457,7 @@
             background: white;
             padding: 8px 15px;
             border-radius: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             margin-top: 10px;
         }
 
@@ -434,6 +479,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="loader-overlay">
         <i class="fas fa-hamburger loader-icon"></i>
@@ -442,24 +488,25 @@
 
     <nav class="navbar navbar-expand-lg site-header fixed-top">
         <div class="container">
-            <a class="navbar-brand logo" href="#">
+            <a class="navbar-brand logo" href="/cardapio-semlogin">
                 <i class="fas fa-hamburger me-2"></i>BurguerPI
             </a>
 
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="fas fa-bars text-primary fs-3"></span>
             </button>
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav align-items-center text-center">
                     <li class="nav-item">
-                        <a href="#" class="nav-link-custom active" onclick="closeMenu()">Cardápio</a>
+                        <a href="/cardapio-semlogin" class="nav-link-custom active" onclick="closeMenu()">Cardápio</a>
                     </li>
                     <li class="nav-item">
-                        <a href="sobre.html" class="nav-link-custom" onclick="closeMenu()">Sobre</a>
+                        <a href="/sobre" class="nav-link-custom" onclick="closeMenu()">Sobre</a>
                     </li>
                     <li class="nav-item">
-                        <a href="login.html" class="nav-link-custom" onclick="closeMenu()">Login</a>
+                        <a href="/login" class="nav-link-custom" onclick="closeMenu()">Login</a>
                     </li>
                 </ul>
             </div>
@@ -469,7 +516,8 @@
     <div class="hero">
         <div class="container">
             <h2>Experiência Artesanal</h2>
-            <p>Ingredientes selecionados, sabores inesquecíveis e a melhor experiência gastronômica da cidade entregue na sua mesa.</p>
+            <p>Ingredientes selecionados, sabores inesquecíveis e a melhor experiência gastronômica da cidade entregue
+                na sua mesa.</p>
             <div class="quality-badge">
                 <i class="fas fa-certificate"></i>
                 <span><strong>100% Artesanal</strong> | Ingredientes Frescos</span>
@@ -478,14 +526,15 @@
     </div>
 
     <main class="container">
-        
+
         <div class="promo-banner">
             <h4><i class="fas fa-fire me-2"></i>Promoção Especial!</h4>
             <p>Peça 2 burgers e ganhe 10% de desconto! Válido até o fim do mês.</p>
         </div>
 
         <div class="stats-section">
-            <h3 class="text-center mb-3" style="color: var(--accent-color); font-weight: 700;">Por que escolher a BurguerPI?</h3>
+            <h3 class="text-center mb-3" style="color: var(--accent-color); font-weight: 700;">Por que escolher a
+                BurguerPI?</h3>
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon"><i class="fas fa-hamburger"></i></div>
@@ -509,7 +558,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="category-filters">
             <button class="filter-btn active" onclick="filterMenu('todos', this)">Todos</button>
             <button class="filter-btn" onclick="filterMenu('burgers', this)">Burgers</button>
@@ -533,42 +582,46 @@
                 <a href="#" class="text-secondary mx-2"><i class="fab fa-facebook fa-lg"></i></a>
                 <a href="#" class="text-secondary mx-2"><i class="fab fa-whatsapp fa-lg"></i></a>
             </div>
-            <p class="small mb-0">&copy; 2023 Hamburgueria Artesanal. Feito com <i class="fas fa-heart text-danger"></i> para você.</p>
+            <p class="small mb-0">&copy; 2023 Hamburgueria Artesanal. Feito com <i class="fas fa-heart text-danger"></i>
+                para você.</p>
         </div>
     </footer>
 
     <div class="toast-container p-3">
-        <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+            aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
                     <i class="fas fa-check-circle me-2"></i> Item adicionado ao carrinho!
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
             </div>
         </div>
     </div>
 
     <!-- Modal - Usuário Precisa Logar -->
-    <div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+    <div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
 
-        <div class="modal-header">
-            <h5 class="modal-title" id="loginRequiredLabel">Login necessário</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginRequiredLabel">Login necessário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-        <div class="modal-body">
-            Você precisa estar logado para adicionar produtos ao carrinho.
-        </div>
+                <div class="modal-body">
+                    Você precisa estar logado para adicionar produtos ao carrinho.
+                </div>
 
-        <div class="modal-footer">
-            <a href="login.html" class="btn btn-primary">Fazer Login</a>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-        </div>
+                <div class="modal-footer">
+                    <a href="/login" class="btn btn-primary">Fazer Login</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
 
+            </div>
         </div>
-    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -586,7 +639,7 @@
                 const produtos = result.data || result;
 
                 const container = document.getElementById('menuContainer');
-                
+
                 // Limpa o container (caso tenha algo carregando)
                 container.innerHTML = '';
 
@@ -647,12 +700,12 @@
 
             // 2. Filtrar itens
             const items = document.querySelectorAll('.menu-item');
-            
+
             items.forEach(item => {
                 // Efeito de Fade Out
                 item.style.opacity = '0';
                 item.style.transform = 'scale(0.95)';
-                
+
                 setTimeout(() => {
                     if (category === 'todos' || item.getAttribute('data-category') === category) {
                         item.style.display = 'block';
@@ -681,11 +734,11 @@
         // --- Lógica do Loader ---
         window.addEventListener("load", () => {
             const loader = document.getElementById("loader-overlay");
-            
+
             // Pequeno delay para garantir que a animação seja vista (opcional)
             setTimeout(() => {
                 loader.classList.add("loader-hidden");
-                
+
                 // Remove o elemento do DOM após a transição para liberar memória
                 loader.addEventListener("transitionend", () => {
                     loader.remove();
@@ -695,4 +748,5 @@
     </script>
 
 </body>
+
 </html>

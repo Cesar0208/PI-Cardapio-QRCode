@@ -60,6 +60,11 @@ app.get("/cardapio-semlogin", (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'cardapioSemLogin.html'));
 });
 
+// Servir página sobre
+app.get("/sobre", (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'sobre.html'));
+});
+
 // ============================================
 // ROTAS DE AUTENTICAÇÃO
 // ============================================
